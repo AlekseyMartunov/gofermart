@@ -11,7 +11,7 @@ type Config struct {
 	accrualSystemAddress string `env:"ACCRUAL_SYSTEM_ADDRESS"`
 }
 
-func (c *Config) Parse() {
+func (c *Config) ParseFlags() {
 	flag.StringVar(&c.runAddress, "a", "",
 		"address of server")
 
