@@ -1,41 +1,64 @@
 package handlers
 
 import (
-	"github.com/labstack/echo/v4"
+	"context"
+	"io"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
-type handler struct {
+type logger interface {
+	Info(msg string)
+	Warn(msg string)
+	Error(msg string)
 }
 
-func New() *handler {
-	return &handler{}
+type userService interface {
+	Register(ctx context.Context, login, password string) error
 }
 
-func (h *handler) Register(c echo.Context) error {
+type Handler struct {
+	logger
+	userService
+}
+
+func New(l logger, us userService) *Handler {
+	return &Handler{
+		logger:      l,
+		userService: us,
+	}
+}
+
+func (h *Handler) Register(c echo.Context) error {
+	defer c.Request().Body.Close()
+
+	b, err := io.ReadAll(c.Request().Body)
+
+	h.userService.Register(context.Background(), "", "")
 	return c.String(http.StatusOK, "OK")
 }
 
-func (h *handler) Login(c echo.Context) error {
+func (h *Handler) Login(c echo.Context) error {
 	return c.String(http.StatusOK, "OK")
 }
 
-func (h *handler) GetOrders(c echo.Context) error {
+func (h *Handler) GetOrders(c echo.Context) error {
 	return c.String(http.StatusOK, "OK")
 }
 
-func (h *handler) SaveOrder(c echo.Context) error {
+func (h *Handler) SaveOrder(c echo.Context) error {
 	return c.String(http.StatusOK, "OK")
 }
 
-func (h *handler) Balance(c echo.Context) error {
+func (h *Handler) Balance(c echo.Context) error {
 	return c.String(http.StatusOK, "OK")
 }
 
-func (h *handler) Withdraw(c echo.Context) error {
+func (h *Handler) Withdraw(c echo.Context) error {
 	return c.String(http.StatusOK, "OK")
 }
 
-func (h *handler) Withdrawals(c echo.Context) error {
+func (h *Handler) Withdrawals(c echo.Context) error {
 	return c.String(http.StatusOK, "OK")
 }

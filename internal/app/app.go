@@ -2,23 +2,46 @@ package app
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
 
+	"github.com/jackc/pgx/v5"
+	_ "github.com/jackc/pgx/v5/stdlib"
+
+	"AlekseyMartunov/internal/adapters/db/migration"
+	"AlekseyMartunov/internal/adapters/db/users/postgres"
 	"AlekseyMartunov/internal/adapters/http/handlers"
 	"AlekseyMartunov/internal/adapters/http/router"
-	"AlekseyMartunov/internal/logger"
+	"AlekseyMartunov/internal/users"
+	"AlekseyMartunov/internal/utils/config"
+	"AlekseyMartunov/internal/utils/logger"
 )
 
 func StartApp(ctx context.Context) error {
 
+	cfg := config.New()
+	cfg.ParseFlags()
+
+	if err := runMigrations(cfg); err != nil {
+		return err
+	}
+
 	logger, err := logger.New()
 	if err != nil {
-		return fmt.Errorf("creating logger error: %w", err)
+		return err
 	}
 	defer logger.Sync()
 
-	handler := handlers.New()
+	conn, err := connection(ctx, cfg)
+	if err != nil {
+		return err
+	}
+
+	repo := postgres.NewUserStorage(conn, logger)
+	userService := users.NewUserService(repo)
+
+	handler := handlers.New(logger, userService)
 	router := router.NewRouter(handler)
 
 	s := http.Server{
@@ -31,4 +54,29 @@ func StartApp(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func runMigrations(cfg *config.Config) error {
+	dsn := "postgres://admin:1234@localhost:5432/test"
+	db, err := sql.Open("pgx", dsn)
+	if err != nil {
+		return fmt.Errorf("error with connect to db: %w", err)
+	}
+	defer db.Close()
+
+	err = migration.StartMigrations(db)
+	if err != nil {
+		return fmt.Errorf("migration error: %w", err)
+	}
+
+	return nil
+}
+
+func connection(ctx context.Context, cfg *config.Config) (*pgx.Conn, error) {
+	dsn := "postgres://admin:1234@localhost:5432/test"
+	conn, err := pgx.Connect(ctx, dsn)
+	if err != nil {
+		return nil, fmt.Errorf("error with connect to db: %w", err)
+	}
+	return conn, nil
 }

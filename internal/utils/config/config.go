@@ -11,6 +11,10 @@ type Config struct {
 	accrualSystemAddress string `env:"ACCRUAL_SYSTEM_ADDRESS"`
 }
 
+func New() *Config {
+	return &Config{}
+}
+
 func (c *Config) ParseFlags() {
 	flag.StringVar(&c.runAddress, "a", "",
 		"address of server")
@@ -34,14 +38,14 @@ func (c *Config) ParseFlags() {
 	}
 }
 
-func (c *Config) GetRunAddr() string {
+func (c *Config) RunAddr() string {
 	return c.runAddress
 }
 
-func (c *Config) GetDSN() string {
+func (c *Config) DSN() string {
 	return c.dataBaseDSN
 }
 
-func (c *Config) GetAccSystemAddr() string {
+func (c *Config) AccSystemAddr() string {
 	return c.accrualSystemAddress
 }

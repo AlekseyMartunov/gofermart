@@ -1,9 +1,11 @@
 package logger
 
 import (
+	"fmt"
+	"time"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"time"
 )
 
 type Logger struct {
@@ -11,7 +13,6 @@ type Logger struct {
 }
 
 func New() (*Logger, error) {
-
 	encoderConfig := zapcore.EncoderConfig{
 		TimeKey:        "timestamp",
 		LevelKey:       "level",
@@ -38,7 +39,7 @@ func New() (*Logger, error) {
 	log, err := config.Build(zap.AddCallerSkip(1))
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("creating logger error: %w", err)
 	}
 
 	//sugar := log.Sugar()
