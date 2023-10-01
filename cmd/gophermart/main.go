@@ -10,5 +10,8 @@ func main() {
 	ctx := context.Background()
 	defer ctx.Done()
 
-	app.StartApp(ctx)
+	err := app.StartApp(ctx)
+	if err != nil {
+		panic(err)
+	}
 }

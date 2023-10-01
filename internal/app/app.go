@@ -2,14 +2,21 @@ package app
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"net/http"
 
 	"AlekseyMartunov/internal/adapters/http/handlers"
 	"AlekseyMartunov/internal/adapters/http/router"
+	"AlekseyMartunov/internal/logger"
 )
 
-func StartApp(ctx context.Context) {
+func StartApp(ctx context.Context) error {
+
+	logger, err := logger.New()
+	if err != nil {
+		return fmt.Errorf("creating logger error: %w", err)
+	}
+	defer logger.Sync()
 
 	handler := handlers.New()
 	router := router.NewRouter(handler)
@@ -20,7 +27,8 @@ func StartApp(ctx context.Context) {
 	}
 
 	if err := s.ListenAndServe(); err != http.ErrServerClosed {
-		log.Fatal(err)
+		return fmt.Errorf("listen and serve error: %w", err)
 	}
 
+	return nil
 }
