@@ -15,6 +15,7 @@ import (
 	"AlekseyMartunov/internal/adapters/http/router"
 	"AlekseyMartunov/internal/users"
 	"AlekseyMartunov/internal/utils/config"
+	"AlekseyMartunov/internal/utils/hashencoder"
 	"AlekseyMartunov/internal/utils/logger"
 )
 
@@ -39,7 +40,8 @@ func StartApp(ctx context.Context) error {
 	}
 
 	repo := postgres.NewUserStorage(conn, logger)
-	userService := users.NewUserService(repo)
+	hash := hashencoder.New()
+	userService := users.NewUserService(repo, hash)
 
 	handler := handlers.New(logger, userService)
 	router := router.NewRouter(handler)

@@ -1,21 +1,29 @@
 package users
 
-import "context"
+import (
+	"context"
+)
 
 type storage interface {
 	Register(ctx context.Context, login, password string) error
 }
 
-type UserService struct {
-	repo storage
+type hash interface {
+	Encode(key string) string
 }
 
-func NewUserService(repo storage) *UserService {
+type UserService struct {
+	repo storage
+	hash hash
+}
+
+func NewUserService(r storage, h hash) *UserService {
 	return &UserService{
-		repo: repo,
+		repo: r,
+		hash: h,
 	}
 }
 
 func (us *UserService) Register(ctx context.Context, login, password string) error {
-	return us.repo.Register(ctx, login, password)
+	return us.repo.Register(ctx, login, us.hash.Encode(password))
 }
