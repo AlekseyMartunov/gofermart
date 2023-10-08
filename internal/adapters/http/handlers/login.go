@@ -11,7 +11,7 @@ import (
 	"AlekseyMartunov/internal/adapters/db/users/postgres"
 )
 
-func (h *Handler) Register(c echo.Context) error {
+func (h *Handler) Login(c echo.Context) error {
 	defer c.Request().Body.Close()
 	c.Response().Header().Set("Content-Type", "application/json")
 
@@ -29,16 +29,19 @@ func (h *Handler) Register(c echo.Context) error {
 		return c.String(http.StatusBadRequest, incorrectReq)
 	}
 
-	if user.Login == "" || user.Password == "" {
-		return c.String(http.StatusBadRequest, incorrectReq)
-	}
-
-	err = h.userService.Register(c.Request().Context(), user.Login, user.Password)
+	id, err := h.userService.CheckUserUUID(c.Request().Context(), user.Login, user.Password)
 	if err != nil {
-		if errors.Is(err, postgres.LoginAlreadyUsedErr) {
-			return c.String(http.StatusConflict, loginAlreadyExist)
+		if errors.Is(err, postgres.WrongLoginOrPasswordErr) {
+			return c.String(http.StatusUnauthorized, wrongLoginOrPassErr)
 		}
 		return c.String(http.StatusInternalServerError, internalErr)
 	}
+
+	token, err := h.tokenManager.CreateToken(id)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, internalErr)
+	}
+
+	c.Response().Header().Set("Authorization", "Bearer "+token)
 	return c.String(http.StatusOK, ok)
 }

@@ -15,13 +15,19 @@ type logger interface {
 	Error(msg string)
 }
 
-type UserService interface {
+type tokenManager interface {
+	CreateToken(uuid string) (string, error)
+}
+
+type userService interface {
 	Register(ctx context.Context, login, password string) error
+	CheckUserUUID(ctx context.Context, login, password string) (string, error)
 }
 
 type Handler struct {
 	logger
-	userService UserService
+	userService
+	tokenManager
 }
 
 type userDTO struct {
@@ -29,15 +35,12 @@ type userDTO struct {
 	Password string `json:"password"`
 }
 
-func New(l logger, us UserService) *Handler {
+func New(l logger, us userService, tk tokenManager) *Handler {
 	return &Handler{
-		logger:      l,
-		userService: us,
+		logger:       l,
+		userService:  us,
+		tokenManager: tk,
 	}
-}
-
-func (h *Handler) Login(c echo.Context) error {
-	return c.String(http.StatusOK, "OK")
 }
 
 func (h *Handler) GetOrders(c echo.Context) error {

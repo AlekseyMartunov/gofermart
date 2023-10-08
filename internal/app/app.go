@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -17,6 +18,7 @@ import (
 	"AlekseyMartunov/internal/utils/config"
 	"AlekseyMartunov/internal/utils/hashencoder"
 	"AlekseyMartunov/internal/utils/logger"
+	"AlekseyMartunov/internal/utils/tokenmanager"
 )
 
 func StartApp(ctx context.Context) error {
@@ -42,8 +44,9 @@ func StartApp(ctx context.Context) error {
 	repo := postgres.NewUserStorage(conn, logger)
 	hash := hashencoder.New()
 	userService := users.NewUserService(repo, hash)
+	tokencontroller := tokenmanager.New(time.Hour*10, []byte("Secret key"))
 
-	handler := handlers.New(logger, userService)
+	handler := handlers.New(logger, userService, tokencontroller)
 	router := router.NewRouter(handler)
 
 	s := http.Server{

@@ -6,6 +6,7 @@ import (
 
 type storage interface {
 	Register(ctx context.Context, login, password string) error
+	CheckUserUUID(ctx context.Context, login, password string) (uuid string, err error)
 }
 
 type hash interface {
@@ -26,4 +27,8 @@ func NewUserService(r storage, h hash) *UserService {
 
 func (us *UserService) Register(ctx context.Context, login, password string) error {
 	return us.repo.Register(ctx, login, us.hash.Encode(password))
+}
+
+func (us *UserService) CheckUserUUID(ctx context.Context, login, password string) (uuid string, err error) {
+	return us.repo.CheckUserUUID(ctx, login, us.hash.Encode(password))
 }

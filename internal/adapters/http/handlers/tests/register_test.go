@@ -1,12 +1,15 @@
-package handlers
+package tests
 
 import (
+	"AlekseyMartunov/internal/adapters/http/handlers"
+	"AlekseyMartunov/internal/utils/tokenmanager"
 	"context"
 	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/labstack/echo/v4"
@@ -17,12 +20,6 @@ import (
 )
 
 const testAPIRegister = "/api/user/register"
-
-type testLogger struct{}
-
-func (tl *testLogger) Info(msg string)  {}
-func (tl *testLogger) Warn(msg string)  {}
-func (tl *testLogger) Error(msg string) {}
 
 func TestHandler_Register(t *testing.T) {
 	l := &testLogger{}
@@ -37,7 +34,9 @@ func TestHandler_Register(t *testing.T) {
 	m.EXPECT().Register(ctx, "123", "passs").Return(postgres.LoginAlreadyUsedErr)
 	m.EXPECT().Register(ctx, "a", "b").Return(errors.New("new err"))
 
-	testHandler := New(l, m)
+	tk := tokenmanager.New(time.Hour, []byte("key"))
+
+	testHandler := handlers.New(l, m, tk)
 
 	testCase := []struct {
 		name        string
@@ -85,10 +84,13 @@ func TestHandler_Register(t *testing.T) {
 
 			c := e.NewContext(req, rec)
 			err := testHandler.Register(c)
-			assert.Equal(t, nil, err)
+			assert.NoError(t, err, "Хендлер вернул ошибку")
 
-			assert.Equal(t, tc.statusCode, rec.Code)
-			assert.Equal(t, tc.contentType, rec.Header().Get("Content-Type"))
+			assert.Equal(t, tc.statusCode, rec.Code,
+				"Не совпадает статус код")
+
+			assert.Equal(t, tc.contentType, rec.Header().Get("Content-Type"),
+				"Не совпадает Content-Type")
 		})
 	}
 }

@@ -1,9 +1,8 @@
 package main
 
 import (
-	"context"
-
 	"AlekseyMartunov/internal/app"
+	"context"
 )
 
 func main() {
