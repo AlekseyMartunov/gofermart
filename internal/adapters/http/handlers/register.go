@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"AlekseyMartunov/internal/adapters/db/users/postgres"
 	"context"
 	"encoding/json"
 	"errors"
@@ -9,10 +8,13 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+
+	"AlekseyMartunov/internal/adapters/db/users/postgres"
 )
 
 func (h *Handler) Register(c echo.Context) error {
 	defer c.Request().Body.Close()
+	c.Response().Header().Set("Content-Type", "application/json")
 
 	b, err := io.ReadAll(c.Request().Body)
 	if err != nil {

@@ -7,19 +7,21 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+//go:generate mockgen -package mocks -destination mocks/mock_userservice.go . UserService
+
 type logger interface {
 	Info(msg string)
 	Warn(msg string)
 	Error(msg string)
 }
 
-type userService interface {
+type UserService interface {
 	Register(ctx context.Context, login, password string) error
 }
 
 type Handler struct {
 	logger
-	userService
+	userService UserService
 }
 
 type userDTO struct {
@@ -27,7 +29,7 @@ type userDTO struct {
 	Password string `json:"password"`
 }
 
-func New(l logger, us userService) *Handler {
+func New(l logger, us UserService) *Handler {
 	return &Handler{
 		logger:      l,
 		userService: us,
