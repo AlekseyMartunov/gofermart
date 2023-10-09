@@ -5,8 +5,9 @@ import (
 )
 
 type storage interface {
-	Register(ctx context.Context, login, password string) error
-	CheckUserUUID(ctx context.Context, login, password string) (uuid string, err error)
+	Create(ctx context.Context, login, password string) error
+	CheckUser(ctx context.Context, login, password string) (uuid string, err error)
+	CheckUserUUID(ctx context.Context, userUUID string) error
 }
 
 type hash interface {
@@ -25,10 +26,14 @@ func NewUserService(r storage, h hash) *UserService {
 	}
 }
 
-func (us *UserService) Register(ctx context.Context, login, password string) error {
-	return us.repo.Register(ctx, login, us.hash.Encode(password))
+func (us *UserService) Create(ctx context.Context, login, password string) error {
+	return us.repo.Create(ctx, login, us.hash.Encode(password))
 }
 
-func (us *UserService) CheckUserUUID(ctx context.Context, login, password string) (uuid string, err error) {
-	return us.repo.CheckUserUUID(ctx, login, us.hash.Encode(password))
+func (us *UserService) CheckUser(ctx context.Context, login, password string) (uuid string, err error) {
+	return us.repo.CheckUser(ctx, login, us.hash.Encode(password))
+}
+
+func (us *UserService) CheckUserUUID(ctx context.Context, userUUID string) error {
+	return us.repo.CheckUserUUID(ctx, userUUID)
 }

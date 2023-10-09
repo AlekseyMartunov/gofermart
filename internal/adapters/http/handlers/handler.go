@@ -20,8 +20,8 @@ type tokenManager interface {
 }
 
 type userService interface {
-	Register(ctx context.Context, login, password string) error
-	CheckUserUUID(ctx context.Context, login, password string) (string, error)
+	Create(ctx context.Context, login, password string) error
+	CheckUser(ctx context.Context, login, password string) (string, error)
 }
 
 type Handler struct {

@@ -5,8 +5,9 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-var LoginAlreadyUsedErr = errors.New("login already used by another user")
-var WrongLoginOrPasswordErr = errors.New("wrong login or password")
+var ErrLoginAlreadyUsed = errors.New("login already used by another user")
+var ErrWrongLoginOrPassword = errors.New("wrong login or password")
+var ErrUserDoseNotExist = errors.New("user dose not exist")
 
 type Logger interface {
 	Info(msg string)

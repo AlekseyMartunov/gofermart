@@ -1,6 +1,8 @@
 package router
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/labstack/echo/v4"
+)
 
 type handler interface {
 	Register(c echo.Context) error
@@ -12,12 +14,20 @@ type handler interface {
 	Withdrawals(c echo.Context) error
 }
 
-type Router struct {
-	handler handler
+type authMiddleware interface {
+	CheckAuth(next echo.HandlerFunc) echo.HandlerFunc
 }
 
-func NewRouter(h handler) *Router {
-	return &Router{handler: h}
+type Router struct {
+	handler
+	authMiddleware
+}
+
+func NewRouter(h handler, a authMiddleware) *Router {
+	return &Router{
+		handler:        h,
+		authMiddleware: a,
+	}
 }
 
 func (r *Router) Route() *echo.Echo {
@@ -25,12 +35,13 @@ func (r *Router) Route() *echo.Echo {
 
 	e.POST("/api/user/register", r.handler.Register)
 	e.POST("/api/user/login", r.handler.Login)
-	e.POST("/api/user/orders", r.handler.SaveOrder)
-	e.POST("/api/user/balance/withdraw", r.handler.Withdraw)
 
-	e.GET("/api/user/orders", r.handler.GetOrders)
-	e.GET("/api/user/balance", r.handler.Balance)
-	e.GET("/api/user/withdrawals", r.handler.Withdrawals)
+	e.POST("/api/user/orders", r.handler.SaveOrder, r.authMiddleware.CheckAuth)
+	e.POST("/api/user/balance/withdraw", r.handler.Withdraw, r.authMiddleware.CheckAuth)
+
+	e.GET("/api/user/orders", r.handler.GetOrders, r.authMiddleware.CheckAuth)
+	e.GET("/api/user/balance", r.handler.Balance, r.authMiddleware.CheckAuth)
+	e.GET("/api/user/withdrawals", r.handler.Withdrawals, r.authMiddleware.CheckAuth)
 
 	return e
 }

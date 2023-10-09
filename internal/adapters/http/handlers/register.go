@@ -33,9 +33,9 @@ func (h *Handler) Register(c echo.Context) error {
 		return c.String(http.StatusBadRequest, incorrectReq)
 	}
 
-	err = h.userService.Register(c.Request().Context(), user.Login, user.Password)
+	err = h.userService.Create(c.Request().Context(), user.Login, user.Password)
 	if err != nil {
-		if errors.Is(err, postgres.LoginAlreadyUsedErr) {
+		if errors.Is(err, postgres.ErrLoginAlreadyUsed) {
 			return c.String(http.StatusConflict, loginAlreadyExist)
 		}
 		return c.String(http.StatusInternalServerError, internalErr)

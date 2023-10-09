@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var InvalidToken = errors.New("invalid token")
+var ErrInvalidToken = errors.New("invalid token")
 
 type TokenController struct {
 	tokenTTL  time.Duration
@@ -54,12 +54,12 @@ func (tk *TokenController) GetUserUUID(tokenString string) (string, error) {
 	})
 
 	if err != nil {
-		return "", InvalidToken
+		return "", ErrInvalidToken
 	}
 
 	if !token.Valid {
 
-		return "", InvalidToken
+		return "", ErrInvalidToken
 	}
 
 	return claims.UserUUID, nil
