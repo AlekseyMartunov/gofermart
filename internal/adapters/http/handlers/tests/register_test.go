@@ -30,9 +30,9 @@ func TestHandler_Register(t *testing.T) {
 	ctx := context.Background()
 	m := mocks.NewMockUserService(ctrl)
 
-	m.EXPECT().Register(ctx, "123", "pass").Return(nil)
-	m.EXPECT().Register(ctx, "123", "passs").Return(postgres.LoginAlreadyUsedErr)
-	m.EXPECT().Register(ctx, "a", "b").Return(errors.New("new err"))
+	m.EXPECT().Create(ctx, "123", "pass").Return("78457-34394-394839", nil)
+	m.EXPECT().Create(ctx, "123", "passs").Return("", postgres.ErrLoginAlreadyUsed)
+	m.EXPECT().Create(ctx, "a", "b").Return("", errors.New("new err"))
 
 	tk := tokenmanager.New(time.Hour, []byte("key"))
 
@@ -43,30 +43,35 @@ func TestHandler_Register(t *testing.T) {
 		body        string
 		statusCode  int
 		contentType string
+		checkToken  bool
 	}{
 		{
 			name:        "test1",
 			body:        `{"login": "123", "password": "pass"}`,
 			statusCode:  http.StatusOK,
 			contentType: "application/json",
+			checkToken:  true,
 		},
 		{
 			name:        "test2",
 			body:        `{"login": "123", "password": "passs"}`,
 			statusCode:  http.StatusConflict,
 			contentType: "application/json",
+			checkToken:  false,
 		},
 		{
 			name:        "test3",
 			body:        `{"login: "123", "password": "passs"`,
 			statusCode:  http.StatusBadRequest,
 			contentType: "application/json",
+			checkToken:  false,
 		},
 		{
 			name:        "test4",
 			body:        `{"login": "a", "password": "b"}`,
 			statusCode:  http.StatusInternalServerError,
 			contentType: "application/json",
+			checkToken:  false,
 		},
 	}
 
@@ -91,6 +96,10 @@ func TestHandler_Register(t *testing.T) {
 
 			assert.Equal(t, tc.contentType, rec.Header().Get("Content-Type"),
 				"Не совпадает Content-Type")
+			if tc.checkToken {
+				assert.NotEmpty(t, rec.Header().Get("Authorization"),
+					"Отсутствует токен в заголовке")
+			}
 		})
 	}
 }

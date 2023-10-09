@@ -33,12 +33,19 @@ func (h *Handler) Register(c echo.Context) error {
 		return c.String(http.StatusBadRequest, incorrectReq)
 	}
 
-	err = h.userService.Create(c.Request().Context(), user.Login, user.Password)
+	userUUID, err := h.userService.Create(c.Request().Context(), user.Login, user.Password)
 	if err != nil {
 		if errors.Is(err, postgres.ErrLoginAlreadyUsed) {
 			return c.String(http.StatusConflict, loginAlreadyExist)
 		}
 		return c.String(http.StatusInternalServerError, internalErr)
 	}
+
+	token, err := h.tokenManager.CreateToken(userUUID)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, internalErr)
+	}
+
+	c.Response().Header().Add("Authorization", "Bearer "+token)
 	return c.String(http.StatusOK, ok)
 }

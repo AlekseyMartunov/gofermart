@@ -5,7 +5,7 @@ import (
 )
 
 type storage interface {
-	Create(ctx context.Context, login, password string) error
+	Create(ctx context.Context, login, password string) (uuid string, err error)
 	CheckUser(ctx context.Context, login, password string) (uuid string, err error)
 	CheckUserUUID(ctx context.Context, userUUID string) error
 }
@@ -26,7 +26,7 @@ func NewUserService(r storage, h hash) *UserService {
 	}
 }
 
-func (us *UserService) Create(ctx context.Context, login, password string) error {
+func (us *UserService) Create(ctx context.Context, login, password string) (uuid string, err error) {
 	return us.repo.Create(ctx, login, us.hash.Encode(password))
 }
 

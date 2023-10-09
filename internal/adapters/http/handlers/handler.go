@@ -19,14 +19,20 @@ type tokenManager interface {
 	CreateToken(uuid string) (string, error)
 }
 
-type userService interface {
-	Create(ctx context.Context, login, password string) error
+type UserService interface {
+	Create(ctx context.Context, login, password string) (string, error)
 	CheckUser(ctx context.Context, login, password string) (string, error)
+}
+
+type OrderService interface {
+	Create(number, userUUID string) error
+	GetOwner(number string) (uuid string, err error)
 }
 
 type Handler struct {
 	logger
-	userService
+	userService  UserService
+	orderService OrderService
 	tokenManager
 }
 
@@ -35,7 +41,11 @@ type userDTO struct {
 	Password string `json:"password"`
 }
 
-func New(l logger, us userService, tk tokenManager) *Handler {
+type orderDTO struct {
+	number string
+}
+
+func New(l logger, us UserService, tk tokenManager) *Handler {
 	return &Handler{
 		logger:       l,
 		userService:  us,
@@ -44,10 +54,6 @@ func New(l logger, us userService, tk tokenManager) *Handler {
 }
 
 func (h *Handler) GetOrders(c echo.Context) error {
-	return c.String(http.StatusOK, "OK")
-}
-
-func (h *Handler) SaveOrder(c echo.Context) error {
 	return c.String(http.StatusOK, "OK")
 }
 
