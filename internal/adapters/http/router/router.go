@@ -5,8 +5,6 @@ import (
 )
 
 type handler interface {
-	Register(c echo.Context) error
-	Login(c echo.Context) error
 	GetOrders(c echo.Context) error
 	SaveOrder(c echo.Context) error
 	Balance(c echo.Context) error
@@ -14,27 +12,34 @@ type handler interface {
 	Withdrawals(c echo.Context) error
 }
 
+type loginHandler interface {
+	Register(c echo.Context) error
+	Login(c echo.Context) error
+}
+
 type authMiddleware interface {
 	CheckAuth(next echo.HandlerFunc) echo.HandlerFunc
 }
 
 type Router struct {
-	handler
-	authMiddleware
+	handler        handler
+	authMiddleware authMiddleware
+	loginHandler   loginHandler
 }
 
-func NewRouter(h handler, a authMiddleware) *Router {
+func NewRouter(h handler, lh loginHandler, a authMiddleware) *Router {
 	return &Router{
 		handler:        h,
 		authMiddleware: a,
+		loginHandler:   lh,
 	}
 }
 
 func (r *Router) Route() *echo.Echo {
 	e := echo.New()
 
-	e.POST("/api/user/register", r.handler.Register)
-	e.POST("/api/user/login", r.handler.Login)
+	e.POST("/api/user/register", r.loginHandler.Register)
+	e.POST("/api/user/login", r.loginHandler.Login)
 
 	e.POST("/api/user/orders", r.handler.SaveOrder, r.authMiddleware.CheckAuth)
 	e.POST("/api/user/balance/withdraw", r.handler.Withdraw, r.authMiddleware.CheckAuth)

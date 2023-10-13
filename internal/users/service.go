@@ -7,7 +7,6 @@ import (
 type storage interface {
 	Create(ctx context.Context, login, password string) (uuid string, err error)
 	CheckUser(ctx context.Context, login, password string) (uuid string, err error)
-	CheckUserUUID(ctx context.Context, userUUID string) error
 	GetIDByUUID(ctx context.Context, uuid string) (int, error)
 }
 
@@ -27,16 +26,12 @@ func NewUserService(r storage, h hash) *UserService {
 	}
 }
 
-func (us *UserService) Create(ctx context.Context, login, password string) (uuid string, err error) {
-	return us.repo.Create(ctx, login, us.hash.Encode(password))
+func (us *UserService) Create(ctx context.Context, user User) (uuid string, err error) {
+	return us.repo.Create(ctx, user.Login, us.hash.Encode(user.Password))
 }
 
-func (us *UserService) CheckUser(ctx context.Context, login, password string) (uuid string, err error) {
-	return us.repo.CheckUser(ctx, login, us.hash.Encode(password))
-}
-
-func (us *UserService) CheckUserUUID(ctx context.Context, userUUID string) error {
-	return us.repo.CheckUserUUID(ctx, userUUID)
+func (us *UserService) CheckUser(ctx context.Context, user User) (uuid string, err error) {
+	return us.repo.CheckUser(ctx, user.Login, us.hash.Encode(user.Password))
 }
 
 func (us *UserService) GetIDByUUID(ctx context.Context, uuid string) (int, error) {

@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"AlekseyMartunov/internal/tokenmanager"
 	"context"
 	"errors"
 	"net/http"
@@ -16,7 +17,6 @@ import (
 	"AlekseyMartunov/internal/adapters/db/users/postgres"
 	"AlekseyMartunov/internal/adapters/http/handlers"
 	"AlekseyMartunov/internal/adapters/http/handlers/mocks"
-	"AlekseyMartunov/internal/utils/tokenmanager"
 )
 
 const testAPILogin = "/api/user/login"

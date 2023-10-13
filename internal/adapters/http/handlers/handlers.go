@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"AlekseyMartunov/internal/orders"
+	"AlekseyMartunov/internal/users"
 	"context"
 	"net/http"
 
@@ -16,13 +17,9 @@ type logger interface {
 	Error(msg string)
 }
 
-type tokenManager interface {
-	CreateToken(uuid string) (string, error)
-}
-
 type UserService interface {
-	Create(ctx context.Context, login, password string) (string, error)
-	CheckUser(ctx context.Context, login, password string) (string, error)
+	Create(ctx context.Context, user users.User) (string, error)
+	CheckUser(ctx context.Context, user users.User) (string, error)
 }
 
 type OrderService interface {
@@ -34,12 +31,6 @@ type Handler struct {
 	logger       logger
 	userService  UserService
 	orderService OrderService
-	tokenManager tokenManager
-}
-
-type userDTO struct {
-	Login    string `json:"login"`
-	Password string `json:"password"`
 }
 
 type orderDTO struct {
@@ -54,11 +45,10 @@ func (dto *orderDTO) toEntity() orders.Order {
 	}
 }
 
-func New(l logger, us UserService, tk tokenManager, os OrderService) *Handler {
+func New(l logger, us UserService, os OrderService) *Handler {
 	return &Handler{
 		logger:       l,
 		userService:  us,
-		tokenManager: tk,
 		orderService: os,
 	}
 }

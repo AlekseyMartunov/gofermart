@@ -1,4 +1,4 @@
-package handlers
+package loginhandlers
 
 import (
 	"encoding/json"
@@ -11,13 +11,13 @@ import (
 	"AlekseyMartunov/internal/adapters/db/users/postgres"
 )
 
-func (h *Handler) Login(c echo.Context) error {
+func (lh *LoginHandler) Login(c echo.Context) error {
 	defer c.Request().Body.Close()
 	c.Response().Header().Set("Content-Type", "application/json")
 
 	b, err := io.ReadAll(c.Request().Body)
 	if err != nil {
-		h.logger.Error("request body read error")
+		lh.logger.Error("request body read error")
 		return c.String(http.StatusBadRequest, incorrectReq)
 	}
 
@@ -25,11 +25,11 @@ func (h *Handler) Login(c echo.Context) error {
 
 	err = json.Unmarshal(b, &user)
 	if err != nil {
-		h.logger.Error("unmarshal error")
+		lh.logger.Error("unmarshal error")
 		return c.String(http.StatusBadRequest, incorrectReq)
 	}
 
-	id, err := h.userService.CheckUser(c.Request().Context(), user.Login, user.Password)
+	id, err := lh.userService.CheckUser(c.Request().Context(), user.toEntity())
 	if err != nil {
 		if errors.Is(err, postgres.ErrWrongLoginOrPassword) {
 			return c.String(http.StatusUnauthorized, wrongLoginOrPassErr)
@@ -37,7 +37,7 @@ func (h *Handler) Login(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, internalErr)
 	}
 
-	token, err := h.tokenManager.CreateToken(id)
+	token, err := lh.tokenManager.CreateToken(id)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, internalErr)
 	}

@@ -2,7 +2,7 @@ package tests
 
 import (
 	"AlekseyMartunov/internal/adapters/http/handlers"
-	"AlekseyMartunov/internal/utils/tokenmanager"
+	"AlekseyMartunov/internal/tokenmanager"
 	"context"
 	"errors"
 	"net/http"

@@ -2,7 +2,12 @@ package app
 
 import (
 	postgres2 "AlekseyMartunov/internal/adapters/db/orders/postgres"
+	"AlekseyMartunov/internal/adapters/http/loginhandlers"
+	"AlekseyMartunov/internal/config"
+	"AlekseyMartunov/internal/logger"
+	"AlekseyMartunov/internal/middleware/auth"
 	"AlekseyMartunov/internal/orders"
+	"AlekseyMartunov/internal/tokenmanager"
 	"context"
 	"database/sql"
 	"fmt"
@@ -17,11 +22,7 @@ import (
 	"AlekseyMartunov/internal/adapters/http/handlers"
 	"AlekseyMartunov/internal/adapters/http/router"
 	"AlekseyMartunov/internal/users"
-	"AlekseyMartunov/internal/utils/config"
 	"AlekseyMartunov/internal/utils/hashencoder"
-	"AlekseyMartunov/internal/utils/logger"
-	"AlekseyMartunov/internal/utils/middleware/auth"
-	"AlekseyMartunov/internal/utils/tokenmanager"
 )
 
 func StartApp(ctx context.Context) error {
@@ -51,11 +52,14 @@ func StartApp(ctx context.Context) error {
 
 	userService := users.NewUserService(userRepo, hash)
 	orderService := orders.NewOrderService(orderRepo)
+
 	tokenController := tokenmanager.New(time.Hour*10, []byte("Secret key"))
 	auth := auth.New(userService, tokenController)
 
-	handler := handlers.New(logger, userService, tokenController, orderService)
-	router := router.NewRouter(handler, auth)
+	handler := handlers.New(logger, userService, orderService)
+	loginHandler := loginhandlers.NewLoginHandler(logger, userService, tokenController)
+
+	router := router.NewRouter(handler, loginHandler, auth)
 
 	s := http.Server{
 		Addr:    "127.0.0.1:8080",
