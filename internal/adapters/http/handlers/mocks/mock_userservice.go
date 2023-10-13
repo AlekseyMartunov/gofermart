@@ -34,31 +34,32 @@ func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 	return m.recorder
 }
 
-// CheckUserUUID mocks base method.
-func (m *MockUserService) CheckUserUUID(arg0 context.Context, arg1, arg2 string) (string, error) {
+// CheckUser mocks base method.
+func (m *MockUserService) CheckUser(arg0 context.Context, arg1, arg2 string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CheckUserUUID", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "CheckUser", arg0, arg1, arg2)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// CheckUserUUID indicates an expected call of CheckUserUUID.
-func (mr *MockUserServiceMockRecorder) CheckUserUUID(arg0, arg1, arg2 interface{}) *gomock.Call {
+// CheckUser indicates an expected call of CheckUser.
+func (mr *MockUserServiceMockRecorder) CheckUser(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckUserUUID", reflect.TypeOf((*MockUserService)(nil).CheckUserUUID), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckUser", reflect.TypeOf((*MockUserService)(nil).CheckUser), arg0, arg1, arg2)
 }
 
-// Register mocks base method.
-func (m *MockUserService) Register(arg0 context.Context, arg1, arg2 string) error {
+// Create mocks base method.
+func (m *MockUserService) Create(arg0 context.Context, arg1, arg2 string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Register", arg0, arg1, arg2)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "Create", arg0, arg1, arg2)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
-// Register indicates an expected call of Register.
-func (mr *MockUserServiceMockRecorder) Register(arg0, arg1, arg2 interface{}) *gomock.Call {
+// Create indicates an expected call of Create.
+func (mr *MockUserServiceMockRecorder) Create(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockUserService)(nil).Register), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUserService)(nil).Create), arg0, arg1, arg2)
 }

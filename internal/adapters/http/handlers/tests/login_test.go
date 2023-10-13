@@ -30,9 +30,9 @@ func TestHandler_Login(t *testing.T) {
 	ctx := context.Background()
 	m := mocks.NewMockUserService(ctrl)
 
-	m.EXPECT().CheckUserUUID(ctx, "login", "pass").Return("userUUID", nil)
-	m.EXPECT().CheckUserUUID(ctx, "wrongLogin", "pass").Return("", postgres.WrongLoginOrPasswordErr)
-	m.EXPECT().CheckUserUUID(ctx, "login", "password").Return("", errors.New("another err"))
+	m.EXPECT().CheckUser(ctx, "login", "pass").Return("userUUID", nil)
+	m.EXPECT().CheckUser(ctx, "wrongLogin", "pass").Return("", postgres.ErrWrongLoginOrPassword)
+	m.EXPECT().CheckUser(ctx, "login", "password").Return("", errors.New("another err"))
 
 	tk := tokenmanager.New(time.Hour, []byte("key"))
 

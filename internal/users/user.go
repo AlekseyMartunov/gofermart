@@ -1,7 +1,5 @@
 package users
 
-import "AlekseyMartunov/internal/orders"
-
 type User struct {
 	ID       string
 	UUID     string
@@ -9,5 +7,4 @@ type User struct {
 	Password string
 	Money    int
 	Balls    int
-	orders   []orders.Order
 }

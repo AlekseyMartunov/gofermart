@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"AlekseyMartunov/internal/orders"
 	"context"
 	"net/http"
 
@@ -19,15 +20,21 @@ type tokenManager interface {
 	CreateToken(uuid string) (string, error)
 }
 
-type userService interface {
-	Register(ctx context.Context, login, password string) error
-	CheckUserUUID(ctx context.Context, login, password string) (string, error)
+type UserService interface {
+	Create(ctx context.Context, login, password string) (string, error)
+	CheckUser(ctx context.Context, login, password string) (string, error)
+}
+
+type OrderService interface {
+	Create(ctx context.Context, order orders.Order) error
+	GetUserID(ctx context.Context, number string) (int, error)
 }
 
 type Handler struct {
-	logger
-	userService
-	tokenManager
+	logger       logger
+	userService  UserService
+	orderService OrderService
+	tokenManager tokenManager
 }
 
 type userDTO struct {
@@ -35,19 +42,28 @@ type userDTO struct {
 	Password string `json:"password"`
 }
 
-func New(l logger, us userService, tk tokenManager) *Handler {
+type orderDTO struct {
+	number string
+	UserID int
+}
+
+func (dto *orderDTO) toEntity() orders.Order {
+	return orders.Order{
+		Number: dto.number,
+		UserID: dto.UserID,
+	}
+}
+
+func New(l logger, us UserService, tk tokenManager, os OrderService) *Handler {
 	return &Handler{
 		logger:       l,
 		userService:  us,
 		tokenManager: tk,
+		orderService: os,
 	}
 }
 
 func (h *Handler) GetOrders(c echo.Context) error {
-	return c.String(http.StatusOK, "OK")
-}
-
-func (h *Handler) SaveOrder(c echo.Context) error {
 	return c.String(http.StatusOK, "OK")
 }
 

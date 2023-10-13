@@ -29,9 +29,9 @@ func (h *Handler) Login(c echo.Context) error {
 		return c.String(http.StatusBadRequest, incorrectReq)
 	}
 
-	id, err := h.userService.CheckUserUUID(c.Request().Context(), user.Login, user.Password)
+	id, err := h.userService.CheckUser(c.Request().Context(), user.Login, user.Password)
 	if err != nil {
-		if errors.Is(err, postgres.WrongLoginOrPasswordErr) {
+		if errors.Is(err, postgres.ErrWrongLoginOrPassword) {
 			return c.String(http.StatusUnauthorized, wrongLoginOrPassErr)
 		}
 		return c.String(http.StatusInternalServerError, internalErr)
