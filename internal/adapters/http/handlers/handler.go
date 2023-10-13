@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"AlekseyMartunov/internal/orders"
 	"context"
 	"net/http"
 
@@ -25,15 +26,15 @@ type UserService interface {
 }
 
 type OrderService interface {
-	Create(number, userUUID string) error
-	GetOwner(number string) (uuid string, err error)
+	Create(ctx context.Context, order orders.Order) error
+	GetUserID(ctx context.Context, number string) (int, error)
 }
 
 type Handler struct {
-	logger
+	logger       logger
 	userService  UserService
 	orderService OrderService
-	tokenManager
+	tokenManager tokenManager
 }
 
 type userDTO struct {
@@ -43,13 +44,22 @@ type userDTO struct {
 
 type orderDTO struct {
 	number string
+	UserID int
 }
 
-func New(l logger, us UserService, tk tokenManager) *Handler {
+func (dto *orderDTO) toEntity() orders.Order {
+	return orders.Order{
+		Number: dto.number,
+		UserID: dto.UserID,
+	}
+}
+
+func New(l logger, us UserService, tk tokenManager, os OrderService) *Handler {
 	return &Handler{
 		logger:       l,
 		userService:  us,
 		tokenManager: tk,
+		orderService: os,
 	}
 }
 

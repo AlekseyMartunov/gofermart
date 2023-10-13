@@ -1,6 +1,8 @@
 package app
 
 import (
+	postgres2 "AlekseyMartunov/internal/adapters/db/orders/postgres"
+	"AlekseyMartunov/internal/orders"
 	"context"
 	"database/sql"
 	"fmt"
@@ -42,13 +44,17 @@ func StartApp(ctx context.Context) error {
 		return err
 	}
 
-	repo := postgres.NewUserStorage(conn, logger)
+	userRepo := postgres.NewUserStorage(conn, logger)
+	orderRepo := postgres2.NewOrderStorage(conn, logger)
+
 	hash := hashencoder.New()
-	userService := users.NewUserService(repo, hash)
+
+	userService := users.NewUserService(userRepo, hash)
+	orderService := orders.NewOrderService(orderRepo)
 	tokenController := tokenmanager.New(time.Hour*10, []byte("Secret key"))
 	auth := auth.New(userService, tokenController)
 
-	handler := handlers.New(logger, userService, tokenController)
+	handler := handlers.New(logger, userService, tokenController, orderService)
 	router := router.NewRouter(handler, auth)
 
 	s := http.Server{

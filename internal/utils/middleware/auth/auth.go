@@ -20,12 +20,12 @@ type tokenController interface {
 }
 
 type userService interface {
-	CheckUserUUID(ctx context.Context, userUUID string) error
+	GetIDByUUID(ctx context.Context, uuid string) (int, error)
 }
 
 type Auth struct {
-	tokenController
-	userService
+	tokenController tokenController
+	userService     userService
 }
 
 func New(us userService, tk tokenController) *Auth {
@@ -48,14 +48,14 @@ func (a *Auth) CheckAuth(next echo.HandlerFunc) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusInternalServerError, invalidToken)
 		}
 
-		err = a.userService.CheckUserUUID(c.Request().Context(), userUUID)
+		userID, err := a.userService.GetIDByUUID(c.Request().Context(), userUUID)
 		if err != nil {
 			if errors.Is(err, postgres.ErrUserDoseNotExist) {
 				return echo.NewHTTPError(http.StatusUnauthorized, emptyUser)
 			}
 			return echo.NewHTTPError(http.StatusInternalServerError, internalServerError)
 		}
-		c.Set("userUUID", userUUID)
+		c.Set("userID", userID)
 		return next(c)
 	}
 }

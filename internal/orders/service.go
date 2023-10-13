@@ -1,20 +1,45 @@
 package orders
 
-import "time"
+import (
+	"context"
+	"errors"
+	"strconv"
+	"time"
+
+	"AlekseyMartunov/internal/utils/luhnalgorithm"
+)
+
+var ErrNotValidNumber = errors.New("not valid order number")
 
 type orderStorage interface {
-	Create(number, userUUID string, time time.Time) error
-	GetOwner(number string) (uuid string, err error)
+	Create(ctx context.Context, order Order) error
+	GetUserID(ctx context.Context, number string) (int, error)
 }
 
 type OrderService struct {
-	orderStorage
+	repo orderStorage
 }
 
-func (os *OrderService) Create(number, userUUID string) error {
-	return os.orderStorage.Create(number, userUUID, time.Now())
+func NewOrderService(s orderStorage) *OrderService {
+	return &OrderService{
+		repo: s,
+	}
 }
 
-func (os *OrderService) GerOwner(number string) (uuid string, err error) {
-	return os.orderStorage.GetOwner(number)
+func (os *OrderService) Create(ctx context.Context, order Order) error {
+	intNumber, err := strconv.Atoi(order.Number)
+	if err != nil {
+		return ErrNotValidNumber
+	}
+
+	if !luhnalgorithm.IsValid(intNumber) {
+		return ErrNotValidNumber
+	}
+
+	order.CreatedTime = time.Now()
+	return os.repo.Create(ctx, order)
+}
+
+func (os *OrderService) GetUserID(ctx context.Context, number string) (int, error) {
+	return os.repo.GetUserID(ctx, number)
 }

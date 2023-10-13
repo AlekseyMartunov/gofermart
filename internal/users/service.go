@@ -8,6 +8,7 @@ type storage interface {
 	Create(ctx context.Context, login, password string) (uuid string, err error)
 	CheckUser(ctx context.Context, login, password string) (uuid string, err error)
 	CheckUserUUID(ctx context.Context, userUUID string) error
+	GetIDByUUID(ctx context.Context, uuid string) (int, error)
 }
 
 type hash interface {
@@ -36,4 +37,8 @@ func (us *UserService) CheckUser(ctx context.Context, login, password string) (u
 
 func (us *UserService) CheckUserUUID(ctx context.Context, userUUID string) error {
 	return us.repo.CheckUserUUID(ctx, userUUID)
+}
+
+func (us *UserService) GetIDByUUID(ctx context.Context, uuid string) (int, error) {
+	return us.repo.GetIDByUUID(ctx, uuid)
 }
