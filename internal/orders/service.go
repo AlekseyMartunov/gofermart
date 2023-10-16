@@ -14,6 +14,7 @@ var ErrNotValidNumber = errors.New("not valid order number")
 type orderStorage interface {
 	Create(ctx context.Context, order Order) error
 	GetUserID(ctx context.Context, number string) (int, error)
+	GetOrders(ctx context.Context, userID int) ([]Order, error)
 }
 
 type OrderService struct {
@@ -42,4 +43,8 @@ func (os *OrderService) Create(ctx context.Context, order Order) error {
 
 func (os *OrderService) GetUserID(ctx context.Context, number string) (int, error) {
 	return os.repo.GetUserID(ctx, number)
+}
+
+func (os *OrderService) GetOrders(ctx context.Context, userID int) ([]Order, error) {
+	return os.repo.GetOrders(ctx, userID)
 }

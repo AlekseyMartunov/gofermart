@@ -16,7 +16,7 @@ func (h *Handler) SaveOrder(c echo.Context) error {
 	}
 
 	order := orderDTO{
-		number: string(number),
+		Number: string(number),
 		UserID: c.Get("userID").(int),
 	}
 
@@ -28,8 +28,9 @@ func (h *Handler) SaveOrder(c echo.Context) error {
 			return c.String(http.StatusUnprocessableEntity, notValidOrderNumber)
 		}
 		if errors.Is(err, postgres.ErrOrderAlreadyCreated) {
-			id, err := h.orderService.GetUserID(ctx, order.number)
+			id, err := h.orderService.GetUserID(ctx, order.Number)
 			if err != nil {
+				h.logger.Error(err.Error())
 				return c.String(http.StatusInternalServerError, internalErr)
 			}
 			if id == order.UserID {
@@ -37,6 +38,9 @@ func (h *Handler) SaveOrder(c echo.Context) error {
 			} else {
 				return c.String(http.StatusConflict, orderRegisteredByAnotherUser)
 			}
+		} else {
+			h.logger.Error(err.Error())
+			return c.String(http.StatusInternalServerError, internalErr)
 		}
 	}
 

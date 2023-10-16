@@ -55,6 +55,7 @@ func (a *Auth) CheckAuth(next echo.HandlerFunc) echo.HandlerFunc {
 			}
 			return echo.NewHTTPError(http.StatusInternalServerError, internalServerError)
 		}
+
 		c.Set("userID", userID)
 		return next(c)
 	}

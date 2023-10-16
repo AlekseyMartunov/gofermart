@@ -6,6 +6,7 @@ import (
 )
 
 var ErrOrderAlreadyCreated = errors.New("the order was already loaded")
+var EmptyResult = errors.New("empty result")
 
 type Logger interface {
 	Info(msg string)

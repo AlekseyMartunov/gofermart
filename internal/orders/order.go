@@ -1,13 +1,12 @@
 package orders
 
-import (
-	"time"
-)
+import "time"
 
 type Order struct {
 	Number      string
-	CreatedTime time.Time
 	Status      string
+	Accrual     int
 	UserUUID    string
 	UserID      int
+	CreatedTime time.Time
 }
