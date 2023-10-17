@@ -26,5 +26,10 @@ func StartMigrations(db *sql.DB) error {
 		return err
 	}
 
+	err = goose.UpTo(db, "./internal/adapters/db/migration", 5)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

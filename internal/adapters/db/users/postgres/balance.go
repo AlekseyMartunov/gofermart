@@ -9,7 +9,7 @@ import (
 
 func (us *UserStorage) Balance(ctx context.Context, UserID int) (users.User, error) {
 	query := `SELECT bonuses, withdrawn FROM client
- 				WHERE client_id = $1`
+  				WHERE client_id = $1`
 
 	row := us.conn.QueryRow(ctx, query, UserID)
 
