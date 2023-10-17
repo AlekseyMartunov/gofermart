@@ -3,7 +3,6 @@ package auth
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -68,8 +67,6 @@ func (a *Auth) CheckAuth(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		c.Set("userID", userID)
-
-		a.logger.Info(fmt.Sprintf("Пришел пользователь с ID: %d", userID))
 		return next(c)
 	}
 }

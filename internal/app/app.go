@@ -7,6 +7,7 @@ import (
 	"AlekseyMartunov/internal/config"
 	"AlekseyMartunov/internal/logger"
 	"AlekseyMartunov/internal/middleware/auth"
+	"AlekseyMartunov/internal/middleware/login"
 	"AlekseyMartunov/internal/orders"
 	"AlekseyMartunov/internal/tokenmanager"
 	"context"
@@ -55,13 +56,15 @@ func StartApp(ctx context.Context) error {
 	orderService := orders.NewOrderService(orderRepo)
 
 	tokenController := tokenmanager.New(time.Hour*10, []byte("Secret key"))
+
 	auth := auth.New(userService, tokenController, logger)
+	logMiddleware := login.NewLoggerMiddleware(logger)
 
 	orderHandler := orderhandlers.New(logger, userService, orderService)
 	userHandler := userhandlers.New(logger, userService)
 	loginHandler := loginhandlers.NewLoginHandler(logger, userService, tokenController)
 
-	router := router.NewRouter(userHandler, orderHandler, loginHandler, auth)
+	router := router.NewRouter(userHandler, orderHandler, loginHandler, auth, logMiddleware)
 
 	s := http.Server{
 		Addr:    "127.0.0.1:8080",
@@ -76,8 +79,8 @@ func StartApp(ctx context.Context) error {
 }
 
 func runMigrations(cfg *config.Config) error {
-	//dsn := "postgres://admin:1234@localhost:5432/test"
-	dsn := cfg.DSN()
+	dsn := "postgres://admin:1234@localhost:5432/test"
+	//dsn := cfg.DSN()
 	db, err := sql.Open("pgx", dsn)
 	if err != nil {
 		return fmt.Errorf("error with connect to db: %w", err)
@@ -93,8 +96,8 @@ func runMigrations(cfg *config.Config) error {
 }
 
 func connection(ctx context.Context, cfg *config.Config) (*pgx.Conn, error) {
-	//dsn := "postgres://admin:1234@localhost:5432/test"
-	dsn := cfg.DSN()
+	dsn := "postgres://admin:1234@localhost:5432/test"
+	//dsn := cfg.DSN()
 	conn, err := pgx.Connect(ctx, dsn)
 	if err != nil {
 		return nil, fmt.Errorf("error with connect to db: %w", err)
