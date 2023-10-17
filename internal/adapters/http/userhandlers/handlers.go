@@ -4,8 +4,6 @@ import (
 	"AlekseyMartunov/internal/orders"
 	"AlekseyMartunov/internal/users"
 	"context"
-	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 type logger interface {
@@ -16,6 +14,7 @@ type logger interface {
 
 type UserService interface {
 	Balance(ctx context.Context, userID int) (users.User, error)
+	GetHistory(ctx context.Context, userID int) ([]users.HistoryElement, error)
 }
 
 type OrderService interface {
@@ -58,8 +57,4 @@ func (dto *orderDTO) toEntity() orders.Order {
 		Discount: dto.Discount,
 		UserID:   dto.UserID,
 	}
-}
-
-func (h *UserHandlers) Withdrawals(c echo.Context) error {
-	return c.String(http.StatusOK, "OK")
 }

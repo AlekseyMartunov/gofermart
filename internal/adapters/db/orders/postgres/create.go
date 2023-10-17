@@ -10,7 +10,7 @@ import (
 )
 
 func (os *OrderStorage) Create(ctx context.Context, order orders.Order) error {
-	query := `INSERT INTO "order" (order_number, created_time, fk_user_id)
+	query := `INSERT INTO orders (order_number, created_time, fk_user_id)
  				VALUES ($1, $2, $3)`
 
 	_, err := os.conn.Exec(ctx, query, order.Number, order.CreatedTime, order.UserID)

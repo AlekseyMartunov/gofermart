@@ -8,6 +8,7 @@ import (
 var ErrLoginAlreadyUsed = errors.New("login already used by another user")
 var ErrWrongLoginOrPassword = errors.New("wrong login or password")
 var ErrUserDoseNotExist = errors.New("user dose not exist")
+var ErrEmptyHistory = errors.New("empty history")
 
 type Logger interface {
 	Info(msg string)

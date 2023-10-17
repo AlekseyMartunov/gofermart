@@ -1,5 +1,5 @@
 -- +goose Up
-CREATE TABLE IF NOT EXISTS "order" (
+CREATE TABLE IF NOT EXISTS orders (
     order_id SERIAL PRIMARY KEY,
     order_number VARCHAR(50) UNIQUE,
     fk_order_status INTEGER REFERENCES status(status_id) DEFAULT 1,
@@ -10,4 +10,4 @@ CREATE TABLE IF NOT EXISTS "order" (
 );
 
 -- +goose Down
-DROP TABLE IF EXISTS "order";
+DROP TABLE IF EXISTS orders;

@@ -6,7 +6,7 @@ import (
 )
 
 func (os *OrderStorage) GetUserID(ctx context.Context, number string) (int, error) {
-	query := `SELECT fk_user_id FROM "order" WHERE order_number = $1`
+	query := `SELECT fk_user_id FROM orders WHERE order_number = $1`
 
 	res := os.conn.QueryRow(ctx, query, number)
 

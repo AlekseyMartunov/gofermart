@@ -9,7 +9,7 @@ import (
 
 func (os *OrderStorage) GetOrders(ctx context.Context, userID int) ([]orders.Order, error) {
 	query := `SELECT order_number, status.status_name, accrual, created_time
-				FROM "order" AS t1 INNER JOIN status ON t1.fk_order_status = status.status_id
+				FROM orders AS t1 INNER JOIN status ON t1.fk_order_status = status.status_id
 				WHERE t1.fk_user_id = $1
 				ORDER BY created_time DESC;`
 

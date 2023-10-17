@@ -9,6 +9,7 @@ type storage interface {
 	CheckUser(ctx context.Context, login, password string) (uuid string, err error)
 	GetIDByUUID(ctx context.Context, uuid string) (int, error)
 	Balance(ctx context.Context, userID int) (User, error)
+	GetHistory(ctx context.Context, userID int) ([]HistoryElement, error)
 }
 
 type hash interface {
@@ -41,4 +42,8 @@ func (us *UserService) GetIDByUUID(ctx context.Context, uuid string) (int, error
 
 func (us *UserService) Balance(ctx context.Context, userID int) (User, error) {
 	return us.repo.Balance(ctx, userID)
+}
+
+func (us *UserService) GetHistory(ctx context.Context, userID int) ([]HistoryElement, error) {
+	return us.repo.GetHistory(ctx, userID)
 }
