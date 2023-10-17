@@ -15,6 +15,12 @@ const invalidToken = "Please provide valid credentials"
 const emptyUser = "User does not exist"
 const internalServerError = "Internal server error"
 
+type logger interface {
+	Info(msg string)
+	Warn(msg string)
+	Error(msg string)
+}
+
 type tokenController interface {
 	GetUserUUID(tokenString string) (string, error)
 }
@@ -26,9 +32,10 @@ type userService interface {
 type Auth struct {
 	tokenController tokenController
 	userService     userService
+	logger          logger
 }
 
-func New(us userService, tk tokenController) *Auth {
+func New(us userService, tk tokenController, l logger) *Auth {
 	return &Auth{
 		tokenController: tk,
 		userService:     us,
@@ -45,11 +52,13 @@ func (a *Auth) CheckAuth(next echo.HandlerFunc) echo.HandlerFunc {
 
 		userUUID, err := a.tokenController.GetUserUUID(token)
 		if err != nil {
+			a.logger.Error(invalidToken)
 			return echo.NewHTTPError(http.StatusInternalServerError, invalidToken)
 		}
 
 		userID, err := a.userService.GetIDByUUID(c.Request().Context(), userUUID)
 		if err != nil {
+			a.logger.Error("не нашлость пользователя с таким uuid")
 			if errors.Is(err, postgres.ErrUserDoseNotExist) {
 				return echo.NewHTTPError(http.StatusUnauthorized, emptyUser)
 			}
@@ -57,6 +66,7 @@ func (a *Auth) CheckAuth(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		c.Set("userID", userID)
+		a.logger.Info("id пользователя" + string(userID))
 		return next(c)
 	}
 }

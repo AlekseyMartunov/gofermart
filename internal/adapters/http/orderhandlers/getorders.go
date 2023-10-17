@@ -13,7 +13,7 @@ func (h *OrderHandler) GetOrders(c echo.Context) error {
 	userID := c.Get("userID").(int)
 	res, err := h.orderService.GetOrders(c.Request().Context(), userID)
 
-	if errors.Is(err, postgres.EmptyResult) {
+	if errors.Is(err, postgres.ErrEmptyResult) {
 		return c.JSON(http.StatusNoContent, noContent)
 	}
 

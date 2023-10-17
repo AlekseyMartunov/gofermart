@@ -40,7 +40,7 @@ func (os *OrderStorage) GetOrders(ctx context.Context, userID int) ([]orders.Ord
 		resOrders = append(resOrders, o)
 	}
 	if len(resOrders) == 0 {
-		return nil, EmptyResult
+		return nil, ErrEmptyResult
 	}
 
 	err = rows.Err()
