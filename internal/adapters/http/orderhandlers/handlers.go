@@ -1,13 +1,10 @@
-package handlers
+package orderhandlers
 
 import (
 	"AlekseyMartunov/internal/orders"
 	"AlekseyMartunov/internal/users"
 	"context"
-	"net/http"
 	"time"
-
-	"github.com/labstack/echo/v4"
 )
 
 //go:generate mockgen -package mocks -destination mocks/mock_userservice.go . UserService
@@ -29,10 +26,18 @@ type OrderService interface {
 	GetOrders(ctx context.Context, userID int) ([]orders.Order, error)
 }
 
-type Handler struct {
+type OrderHandler struct {
 	logger       logger
 	userService  UserService
 	orderService OrderService
+}
+
+func New(l logger, us UserService, os OrderService) *OrderHandler {
+	return &OrderHandler{
+		logger:       l,
+		userService:  us,
+		orderService: os,
+	}
 }
 
 type orderDTO struct {
@@ -60,24 +65,4 @@ func (dto *orderDTO) toEntity() orders.Order {
 		Number: dto.Number,
 		UserID: dto.UserID,
 	}
-}
-
-func New(l logger, us UserService, os OrderService) *Handler {
-	return &Handler{
-		logger:       l,
-		userService:  us,
-		orderService: os,
-	}
-}
-
-func (h *Handler) Balance(c echo.Context) error {
-	return c.String(http.StatusOK, "OK")
-}
-
-func (h *Handler) Withdraw(c echo.Context) error {
-	return c.String(http.StatusOK, "OK")
-}
-
-func (h *Handler) Withdrawals(c echo.Context) error {
-	return c.String(http.StatusOK, "OK")
 }

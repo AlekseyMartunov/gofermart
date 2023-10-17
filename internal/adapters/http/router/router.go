@@ -4,12 +4,15 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type handler interface {
-	GetOrders(c echo.Context) error
-	SaveOrder(c echo.Context) error
+type userHandler interface {
 	Balance(c echo.Context) error
 	Withdraw(c echo.Context) error
 	Withdrawals(c echo.Context) error
+}
+
+type orderHandler interface {
+	GetOrders(c echo.Context) error
+	SaveOrder(c echo.Context) error
 }
 
 type loginHandler interface {
@@ -22,16 +25,18 @@ type authMiddleware interface {
 }
 
 type Router struct {
-	handler        handler
-	authMiddleware authMiddleware
+	userHandler    userHandler
+	orderHandler   orderHandler
 	loginHandler   loginHandler
+	authMiddleware authMiddleware
 }
 
-func NewRouter(h handler, lh loginHandler, a authMiddleware) *Router {
+func NewRouter(uh userHandler, oh orderHandler, lh loginHandler, m authMiddleware) *Router {
 	return &Router{
-		handler:        h,
-		authMiddleware: a,
+		userHandler:    uh,
+		orderHandler:   oh,
 		loginHandler:   lh,
+		authMiddleware: m,
 	}
 }
 
@@ -41,12 +46,12 @@ func (r *Router) Route() *echo.Echo {
 	e.POST("/api/user/register", r.loginHandler.Register)
 	e.POST("/api/user/login", r.loginHandler.Login)
 
-	e.POST("/api/user/orders", r.handler.SaveOrder, r.authMiddleware.CheckAuth)
-	e.POST("/api/user/balance/withdraw", r.handler.Withdraw, r.authMiddleware.CheckAuth)
+	e.POST("/api/user/orders", r.orderHandler.SaveOrder, r.authMiddleware.CheckAuth)
+	e.GET("/api/user/orders", r.orderHandler.GetOrders, r.authMiddleware.CheckAuth)
 
-	e.GET("/api/user/orders", r.handler.GetOrders, r.authMiddleware.CheckAuth)
-	e.GET("/api/user/balance", r.handler.Balance, r.authMiddleware.CheckAuth)
-	e.GET("/api/user/withdrawals", r.handler.Withdrawals, r.authMiddleware.CheckAuth)
+	e.POST("/api/user/balance/withdraw", r.userHandler.Withdraw, r.authMiddleware.CheckAuth)
+	e.GET("/api/user/balance", r.userHandler.Balance, r.authMiddleware.CheckAuth)
+	e.GET("/api/user/withdrawals", r.userHandler.Withdrawals, r.authMiddleware.CheckAuth)
 
 	return e
 }

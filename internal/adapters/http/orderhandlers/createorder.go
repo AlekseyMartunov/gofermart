@@ -1,4 +1,4 @@
-package handlers
+package orderhandlers
 
 import (
 	"AlekseyMartunov/internal/adapters/db/orders/postgres"
@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func (h *Handler) SaveOrder(c echo.Context) error {
+func (h *OrderHandler) SaveOrder(c echo.Context) error {
 	number, err := io.ReadAll(c.Request().Body)
 	if err != nil {
 		return c.String(http.StatusBadRequest, incorrectReq)

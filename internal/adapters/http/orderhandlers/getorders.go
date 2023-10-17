@@ -1,4 +1,4 @@
-package handlers
+package orderhandlers
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"AlekseyMartunov/internal/adapters/db/orders/postgres"
 )
 
-func (h *Handler) GetOrders(c echo.Context) error {
+func (h *OrderHandler) GetOrders(c echo.Context) error {
 	userID := c.Get("userID").(int)
 	res, err := h.orderService.GetOrders(c.Request().Context(), userID)
 

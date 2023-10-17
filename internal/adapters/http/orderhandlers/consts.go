@@ -1,4 +1,4 @@
-package handlers
+package orderhandlers
 
 const noContent = "You do not have orders"
 const incorrectReq = "Invalid request format."

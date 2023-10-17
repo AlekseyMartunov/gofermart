@@ -1,9 +1,10 @@
 package tokenmanager
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTokenController(t *testing.T) {
@@ -23,7 +24,7 @@ func TestTokenController(t *testing.T) {
 
 	wrongID, err := tk.GetUserUUID(wrongToken)
 
-	assert.Equal(t, err, InvalidToken)
+	assert.Equal(t, err, ErrInvalidToken)
 	assert.Equal(t, "", wrongID)
 
 }

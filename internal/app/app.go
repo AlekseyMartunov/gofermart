@@ -3,6 +3,7 @@ package app
 import (
 	postgres2 "AlekseyMartunov/internal/adapters/db/orders/postgres"
 	"AlekseyMartunov/internal/adapters/http/loginhandlers"
+	"AlekseyMartunov/internal/adapters/http/userhandlers"
 	"AlekseyMartunov/internal/config"
 	"AlekseyMartunov/internal/logger"
 	"AlekseyMartunov/internal/middleware/auth"
@@ -19,7 +20,7 @@ import (
 
 	"AlekseyMartunov/internal/adapters/db/migration"
 	"AlekseyMartunov/internal/adapters/db/users/postgres"
-	"AlekseyMartunov/internal/adapters/http/handlers"
+	"AlekseyMartunov/internal/adapters/http/orderhandlers"
 	"AlekseyMartunov/internal/adapters/http/router"
 	"AlekseyMartunov/internal/users"
 	"AlekseyMartunov/internal/utils/hashencoder"
@@ -56,10 +57,11 @@ func StartApp(ctx context.Context) error {
 	tokenController := tokenmanager.New(time.Hour*10, []byte("Secret key"))
 	auth := auth.New(userService, tokenController)
 
-	handler := handlers.New(logger, userService, orderService)
+	orderHandler := orderhandlers.New(logger, userService, orderService)
+	userHandler := userhandlers.New(logger, userService)
 	loginHandler := loginhandlers.NewLoginHandler(logger, userService, tokenController)
 
-	router := router.NewRouter(handler, loginHandler, auth)
+	router := router.NewRouter(userHandler, orderHandler, loginHandler, auth)
 
 	s := http.Server{
 		Addr:    "127.0.0.1:8080",
