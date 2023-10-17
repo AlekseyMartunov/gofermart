@@ -66,7 +66,7 @@ func (a *Auth) CheckAuth(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		c.Set("userID", userID)
-		a.logger.Info("id пользователя" + string(userID))
+		a.logger.Info("Пришел пользователь с ID:" + string(userID))
 		return next(c)
 	}
 }
