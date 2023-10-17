@@ -1,7 +1,6 @@
 package userhandlers
 
 import (
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -18,7 +17,6 @@ func (h *UserHandlers) Balance(c echo.Context) error {
 
 	user := userDTO{}
 	user.fromEntity(u)
-	fmt.Println("user", user)
 
 	return c.JSON(http.StatusOK, user)
 }

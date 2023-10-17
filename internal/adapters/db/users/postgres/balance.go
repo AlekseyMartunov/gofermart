@@ -8,17 +8,17 @@ import (
 )
 
 func (us *UserStorage) Balance(ctx context.Context, UserID int) (users.User, error) {
-	query := `SELECT bonuses, withdrawn FROM user_balance
- 				WHERE fk_user_id = $1`
+	query := `SELECT bonuses, withdrawn FROM client
+ 				WHERE client_id = $1`
 
 	row := us.conn.QueryRow(ctx, query, UserID)
-	u := users.User{}
 
 	x := decimal.Decimal{}
 	y := decimal.Decimal{}
 
 	err := row.Scan(&x, &y)
 
+	u := users.User{}
 	if err != nil {
 		return u, err
 	}

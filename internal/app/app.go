@@ -76,8 +76,8 @@ func StartApp(ctx context.Context) error {
 }
 
 func runMigrations(cfg *config.Config) error {
-	//dsn := "postgres://admin:1234@localhost:5432/test"
-	dsn := cfg.DSN()
+	dsn := "postgres://admin:1234@localhost:5432/test"
+	//dsn := cfg.DSN()
 	db, err := sql.Open("pgx", dsn)
 	if err != nil {
 		return fmt.Errorf("error with connect to db: %w", err)
@@ -93,8 +93,8 @@ func runMigrations(cfg *config.Config) error {
 }
 
 func connection(ctx context.Context, cfg *config.Config) (*pgx.Conn, error) {
-	//dsn := "postgres://admin:1234@localhost:5432/test"
-	dsn := cfg.DSN()
+	dsn := "postgres://admin:1234@localhost:5432/test"
+	//dsn := cfg.DSN()
 	conn, err := pgx.Connect(ctx, dsn)
 	if err != nil {
 		return nil, fmt.Errorf("error with connect to db: %w", err)
