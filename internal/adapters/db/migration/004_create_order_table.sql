@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS "order" (
     order_number VARCHAR(50) UNIQUE,
     fk_order_status INTEGER REFERENCES status(status_id) DEFAULT 1,
     created_time TIMESTAMP NOT NULL,
-    accrual INTEGER,
+    accrual NUMERIC(10, 5) CHECK(accrual >= 0) DEFAULT 0,
+    discount NUMERIC(10, 5) CHECK(discount >= 0) DEFAULT 0,
     fk_user_id INTEGER REFERENCES client(client_id)
 );
 

@@ -5,8 +5,9 @@ import "time"
 type Order struct {
 	Number      string
 	Status      string
-	Accrual     int
 	UserUUID    string
 	UserID      int
+	Accrual     float64
+	Discount    float64
 	CreatedTime time.Time
 }

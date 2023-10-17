@@ -10,6 +10,7 @@ import (
 )
 
 func (h *OrderHandler) SaveOrder(c echo.Context) error {
+	defer c.Request().Body.Close()
 	number, err := io.ReadAll(c.Request().Body)
 	if err != nil {
 		return c.String(http.StatusBadRequest, incorrectReq)

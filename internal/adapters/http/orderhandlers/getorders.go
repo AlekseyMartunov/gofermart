@@ -19,7 +19,7 @@ func (h *OrderHandler) GetOrders(c echo.Context) error {
 
 	if err != nil {
 		h.logger.Error(err.Error())
-		return c.String(http.StatusInternalServerError, internalErr)
+		return c.JSON(http.StatusInternalServerError, internalErr)
 	}
 
 	return c.JSON(http.StatusOK, fromEntity(res))

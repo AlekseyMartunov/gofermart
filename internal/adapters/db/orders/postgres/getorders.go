@@ -23,7 +23,7 @@ func (os *OrderStorage) GetOrders(ctx context.Context, userID int) ([]orders.Ord
 	for rows.Next() {
 		var number string
 		var status string
-		var accrual sql.NullInt64
+		var accrual sql.NullFloat64
 		var createdTime time.Time
 
 		err := rows.Scan(&number, &status, &accrual, &createdTime)
@@ -34,7 +34,7 @@ func (os *OrderStorage) GetOrders(ctx context.Context, userID int) ([]orders.Ord
 		o := orders.Order{
 			Number:      number,
 			Status:      status,
-			Accrual:     int(accrual.Int64),
+			Accrual:     accrual.Float64,
 			CreatedTime: createdTime,
 		}
 		resOrders = append(resOrders, o)

@@ -7,6 +7,7 @@ import (
 
 var ErrOrderAlreadyCreated = errors.New("the order was already loaded")
 var ErrEmptyResult = errors.New("empty result")
+var ErrNotEnoughMoney = errors.New("not enough money")
 
 type Logger interface {
 	Info(msg string)

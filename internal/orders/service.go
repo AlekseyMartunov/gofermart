@@ -15,6 +15,7 @@ type orderStorage interface {
 	Create(ctx context.Context, order Order) error
 	GetUserID(ctx context.Context, number string) (int, error)
 	GetOrders(ctx context.Context, userID int) ([]Order, error)
+	AddDiscount(ctx context.Context, order Order) error
 }
 
 type OrderService struct {
@@ -39,6 +40,21 @@ func (os *OrderService) Create(ctx context.Context, order Order) error {
 
 	order.CreatedTime = time.Now()
 	return os.repo.Create(ctx, order)
+}
+
+func (os *OrderService) AddDiscount(ctx context.Context, order Order) error {
+	intNumber, err := strconv.Atoi(order.Number)
+	if err != nil {
+		return ErrNotValidNumber
+	}
+
+	if !luhnalgorithm.IsValid(intNumber) {
+		return ErrNotValidNumber
+	}
+
+	order.CreatedTime = time.Now()
+
+	return os.repo.AddDiscount(ctx, order)
 }
 
 func (os *OrderService) GetUserID(ctx context.Context, number string) (int, error) {

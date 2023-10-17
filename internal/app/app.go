@@ -61,7 +61,7 @@ func StartApp(ctx context.Context) error {
 	logMiddleware := login.NewLoggerMiddleware(logger)
 
 	orderHandler := orderhandlers.New(logger, userService, orderService)
-	userHandler := userhandlers.New(logger, userService)
+	userHandler := userhandlers.New(logger, userService, orderService)
 	loginHandler := loginhandlers.NewLoginHandler(logger, userService, tokenController)
 
 	router := router.NewRouter(userHandler, orderHandler, loginHandler, auth, logMiddleware)

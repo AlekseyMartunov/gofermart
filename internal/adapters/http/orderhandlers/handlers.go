@@ -42,7 +42,7 @@ func New(l logger, us UserService, os OrderService) *OrderHandler {
 
 type orderDTO struct {
 	Number      string    `json:"number"`
-	Accrual     int       `json:"accrual,omitempty"`
+	Accrual     float64   `json:"accrual,omitempty"`
 	CreatedTime time.Time `json:"uploaded_at"`
 	Status      string    `json:"status"`
 	UserID      int       `json:"-"`
