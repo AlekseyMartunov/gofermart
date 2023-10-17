@@ -55,7 +55,7 @@ func StartApp(ctx context.Context) error {
 	orderService := orders.NewOrderService(orderRepo)
 
 	tokenController := tokenmanager.New(time.Hour*10, []byte("Secret key"))
-	auth := auth.New(userService, tokenController)
+	auth := auth.New(userService, tokenController, logger)
 
 	orderHandler := orderhandlers.New(logger, userService, orderService)
 	userHandler := userhandlers.New(logger, userService)
