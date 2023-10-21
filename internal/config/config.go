@@ -33,7 +33,7 @@ func (c *Config) ParseFlags() {
 		c.dataBaseDSN = envDSN
 	}
 
-	if accSystem, ok := os.LookupEnv("RUN_ADDRESS"); ok {
+	if accSystem, ok := os.LookupEnv("ACCRUAL_SYSTEM_ADDRESS"); ok {
 		c.accrualSystemAddress = accSystem
 	}
 }
