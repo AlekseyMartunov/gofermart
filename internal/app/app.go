@@ -70,15 +70,18 @@ func StartApp(ctx context.Context) error {
 	router := router.NewRouter(userHandler, orderHandler, loginHandler, auth, logMiddleware)
 
 	collector := collector.NewCollector(conn, logger)
-	req := requestcontroller.New(cfg.Accrual(), "/api/orders/", logger)
+	req := requestcontroller.New(cfg.AccSystemAddr(), "/api/orders/", logger)
 	acc := accural.NewAccrual(logger, orderService)
 
 	numberChan := collector.Run(ctx, time.Second)
 	orderChan := req.Run(ctx, numberChan)
 	acc.Run(ctx, orderChan, time.Second)
 
+	logger.Info(fmt.Sprintf("сервер запущен на : %s", cfg.RunAddr()))
+	logger.Info(fmt.Sprintf("сенврис аккурал запущен на : %s", cfg.AccSystemAddr()))
+
 	s := http.Server{
-		Addr:    "127.0.0.1:8080",
+		Addr:    cfg.RunAddr(),
 		Handler: router.Route(),
 	}
 
