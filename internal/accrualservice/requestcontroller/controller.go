@@ -4,7 +4,6 @@ import (
 	"AlekseyMartunov/internal/orders"
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/go-resty/resty/v2"
 )
 
@@ -89,8 +88,6 @@ func (r *RequestAccrual) get(number string) orders.Order {
 	order.Number = o.Number
 	order.Status = o.Status
 	order.Accrual = o.Accrual
-
-	r.log.Info(fmt.Sprintf("order: %s, %s, %d", order.Number, order.Status, order.Accrual))
 
 	return order
 }

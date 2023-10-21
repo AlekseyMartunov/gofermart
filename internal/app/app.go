@@ -77,9 +77,6 @@ func StartApp(ctx context.Context) error {
 	orderChan := req.Run(ctx, numberChan)
 	acc.Run(ctx, orderChan, time.Second)
 
-	logger.Info(fmt.Sprintf("сервер запущен на : %s", cfg.RunAddr()))
-	logger.Info(fmt.Sprintf("сенврис аккурал запущен на : %s", cfg.AccSystemAddr()))
-
 	s := http.Server{
 		Addr:    cfg.RunAddr(),
 		Handler: router.Route(),
