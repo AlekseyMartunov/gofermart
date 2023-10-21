@@ -16,6 +16,7 @@ type orderStorage interface {
 	GetUserID(ctx context.Context, number string) (int, error)
 	GetOrders(ctx context.Context, userID int) ([]Order, error)
 	AddDiscount(ctx context.Context, order Order) error
+	Update(ctx context.Context, orders ...Order) error
 }
 
 type OrderService struct {
@@ -55,6 +56,10 @@ func (os *OrderService) AddDiscount(ctx context.Context, order Order) error {
 	order.CreatedTime = time.Now()
 
 	return os.repo.AddDiscount(ctx, order)
+}
+
+func (os *OrderService) Update(ctx context.Context, orders ...Order) error {
+	return os.repo.Update(ctx, orders...)
 }
 
 func (os *OrderService) GetUserID(ctx context.Context, number string) (int, error) {

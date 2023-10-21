@@ -49,3 +49,7 @@ func (c *Config) DSN() string {
 func (c *Config) AccSystemAddr() string {
 	return c.accrualSystemAddress
 }
+
+func (c *Config) Accrual() string {
+	return c.accrualSystemAddress
+}

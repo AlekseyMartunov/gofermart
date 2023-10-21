@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"errors"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var ErrLoginAlreadyUsed = errors.New("login already used by another user")
@@ -17,11 +17,11 @@ type Logger interface {
 }
 
 type UserStorage struct {
-	conn *pgx.Conn
+	conn *pgxpool.Pool
 	log  Logger
 }
 
-func NewUserStorage(conn *pgx.Conn, l Logger) *UserStorage {
+func NewUserStorage(conn *pgxpool.Pool, l Logger) *UserStorage {
 	return &UserStorage{
 		conn: conn,
 		log:  l,
