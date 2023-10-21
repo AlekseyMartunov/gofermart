@@ -70,7 +70,7 @@ func StartApp(ctx context.Context) error {
 	router := router.NewRouter(userHandler, orderHandler, loginHandler, auth, logMiddleware)
 
 	collector := collector.NewCollector(conn, logger)
-	req := requestcontroller.New(cfg.Accrual(), "/api/orders/")
+	req := requestcontroller.New(cfg.Accrual(), "/api/orders/", logger)
 	acc := accural.NewAccrual(logger, orderService)
 
 	numberChan := collector.Run(ctx, time.Second*3)

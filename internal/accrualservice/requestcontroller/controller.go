@@ -2,6 +2,7 @@ package requestcontroller
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/go-resty/resty/v2"
 
 	"AlekseyMartunov/internal/orders"
@@ -26,12 +27,13 @@ type RequestAccrual struct {
 	log    logger
 }
 
-func New(host, url string) *RequestAccrual {
+func New(host, url string, l logger) *RequestAccrual {
 	r := resty.New()
 	return &RequestAccrual{
 		host:   host,
 		url:    url,
 		client: r,
+		log:    l,
 	}
 }
 
@@ -61,25 +63,20 @@ func (r *RequestAccrual) get(number string) orders.Order {
 	o := OrderResponse{}
 	order := orders.Order{}
 
-	//client := resty.New()
-	//
-	//resp, err := client.R().
-	//	Get(r.host + r.url + number)
-	//
-	//err = json.Unmarshal(resp.Body(), &o)
-	//if err != nil {
-	//	return order
-	//}
-	//
-	//if err != nil {
-	//	//r.log.Error(err.Error())
-	//	return order
-	//}
-	//fmt.Println("order:", o)
+	client := resty.New()
 
-	o.Number = "123334563558"
-	o.Status = "PROCESSED"
-	o.Accrual = 1212.7484
+	resp, err := client.R().
+		Get(r.host + r.url + number)
+
+	err = json.Unmarshal(resp.Body(), &o)
+	if err != nil {
+		return order
+	}
+
+	if err != nil {
+		r.log.Error(err.Error())
+		return order
+	}
 
 	order.Number = o.Number
 	order.Status = o.Status
