@@ -65,7 +65,7 @@ func (r *RequestAccrual) get(number string) orders.Order {
 
 	client := resty.New()
 
-	url := "http://" + r.host + r.url + number
+	url := r.host + r.url + number
 
 	resp, err := client.R().
 		Get(url)
