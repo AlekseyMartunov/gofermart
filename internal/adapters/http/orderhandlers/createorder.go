@@ -4,6 +4,7 @@ import (
 	"AlekseyMartunov/internal/adapters/db/orders/postgres"
 	"AlekseyMartunov/internal/orders"
 	"errors"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"io"
 	"net/http"
@@ -20,6 +21,7 @@ func (h *OrderHandler) SaveOrder(c echo.Context) error {
 		Number: string(number),
 		UserID: c.Get("userID").(int),
 	}
+	h.logger.Warn(fmt.Sprintf("Creating order: %s", number))
 
 	ctx := c.Request().Context()
 
