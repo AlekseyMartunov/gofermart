@@ -66,7 +66,7 @@ func (r *RequestAccrual) get(number string) orders.Order {
 	client := resty.New()
 
 	resp, err := client.R().
-		Get(r.host + r.url + number)
+		Get("http://" + r.host + r.url + number)
 
 	if err != nil {
 		r.log.Error(err.Error())
