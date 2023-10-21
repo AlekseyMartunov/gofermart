@@ -1,12 +1,11 @@
 package requestcontroller
 
 import (
+	"AlekseyMartunov/internal/orders"
 	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/go-resty/resty/v2"
-
-	"AlekseyMartunov/internal/orders"
 )
 
 type OrderResponse struct {
@@ -69,14 +68,15 @@ func (r *RequestAccrual) get(number string) orders.Order {
 	resp, err := client.R().
 		Get(r.host + r.url + number)
 
-	r.log.Info(fmt.Sprintf("url:", r.host+r.url+number))
-
-	err = json.Unmarshal(resp.Body(), &o)
 	if err != nil {
 		r.log.Error(err.Error())
 		return order
 	}
 
+	r.log.Warn(resp.Status())
+	r.log.Warn(string(resp.Body()))
+
+	err = json.Unmarshal(resp.Body(), &o)
 	if err != nil {
 		r.log.Error(err.Error())
 		return order
