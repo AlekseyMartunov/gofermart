@@ -73,9 +73,9 @@ func StartApp(ctx context.Context) error {
 	req := requestcontroller.New(cfg.Accrual(), "/api/orders/", logger)
 	acc := accural.NewAccrual(logger, orderService)
 
-	numberChan := collector.Run(ctx, time.Second*3)
+	numberChan := collector.Run(ctx, time.Second)
 	orderChan := req.Run(ctx, numberChan)
-	acc.Run(ctx, orderChan, time.Second*3)
+	acc.Run(ctx, orderChan, time.Second)
 
 	s := http.Server{
 		Addr:    "127.0.0.1:8080",
