@@ -3,6 +3,7 @@ package requestcontroller
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/go-resty/resty/v2"
 
 	"AlekseyMartunov/internal/orders"
@@ -68,8 +69,11 @@ func (r *RequestAccrual) get(number string) orders.Order {
 	resp, err := client.R().
 		Get(r.host + r.url + number)
 
+	r.log.Info(fmt.Sprintf("url:", r.host+r.url+number))
+
 	err = json.Unmarshal(resp.Body(), &o)
 	if err != nil {
+		r.log.Error(err.Error())
 		return order
 	}
 
@@ -81,6 +85,8 @@ func (r *RequestAccrual) get(number string) orders.Order {
 	order.Number = o.Number
 	order.Status = o.Status
 	order.Accrual = o.Accrual
+
+	r.log.Info(fmt.Sprintf("order: %s, %s, %d", order.Number, order.Status, order.Accrual))
 
 	return order
 }
