@@ -25,15 +25,15 @@ func (c *Config) ParseFlags() {
 	flag.StringVar(&c.accrualSystemAddress, "r", "",
 		"address of bonuses accrual system")
 
-	if envRunAddr := os.Getenv("RUN_ADDRESS"); envRunAddr != "" {
+	if envRunAddr, ok := os.LookupEnv("RUN_ADDRESS"); ok {
 		c.runAddress = envRunAddr
 	}
 
-	if envDSN := os.Getenv("DATABASE_URI"); envDSN != "" {
+	if envDSN, ok := os.LookupEnv("DATABASE_URI"); ok {
 		c.dataBaseDSN = envDSN
 	}
 
-	if accSystem := os.Getenv("RUN_ADDRESS"); accSystem != "" {
+	if accSystem, ok := os.LookupEnv("RUN_ADDRESS"); ok {
 		c.accrualSystemAddress = accSystem
 	}
 }
