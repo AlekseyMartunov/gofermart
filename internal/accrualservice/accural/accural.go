@@ -46,6 +46,7 @@ func (a *Accrual) Run(ctx context.Context, ch chan orders.Order, t time.Duration
 				}
 
 				a.orderService.Update(ctx, ordersArr...)
+				ordersArr = ordersArr[:0]
 
 			case ord, ok := <-ch:
 				if !ok {
