@@ -1,7 +1,6 @@
 package accural
 
 import (
-	"AlekseyMartunov/internal/accrualservice/requestcontroller"
 	"AlekseyMartunov/internal/orders"
 	"context"
 	"time"
@@ -15,10 +14,6 @@ type logger interface {
 
 type OrderService interface {
 	Update(ctx context.Context, orders ...orders.Order) error
-}
-
-type reqController interface {
-	Get(number string) (requestcontroller.OrderResponse, error)
 }
 
 type Accrual struct {
