@@ -4,8 +4,16 @@ import (
 	"AlekseyMartunov/internal/orders"
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/go-resty/resty/v2"
+	"strings"
+	"time"
 )
+
+var tooManyRequestsErr = errors.New("to many requests to server")
+
+const tooManyRequests = "429"
+const delay = 5
 
 type OrderResponse struct {
 	Number  string  `json:"order"`
@@ -50,44 +58,56 @@ func (r *RequestAccrual) Run(ctx context.Context, ch chan string) chan orders.Or
 					ch = nil
 				}
 
-				order := r.get(number)
-				orderChan <- order
+				orderChan <- r.tryToSendRequest(number)
 			}
 		}
 	}()
 	return orderChan
 }
 
-func (r *RequestAccrual) get(number string) orders.Order {
+func (r *RequestAccrual) get(number string) (orders.Order, error) {
 	o := OrderResponse{}
 	order := orders.Order{}
 
 	client := resty.New()
 
-	url := r.host + r.url + number
+	url := strings.Join([]string{r.host, r.url, number}, "")
 
 	resp, err := client.R().
 		Get(url)
 
-	r.log.Warn(url)
-
 	if err != nil {
 		r.log.Error(err.Error())
-		return order
+		return order, err
 	}
 
 	r.log.Warn(resp.Status())
 	r.log.Warn(string(resp.Body()))
 
+	if resp.Status() == tooManyRequests {
+		return order, tooManyRequestsErr
+	}
+
 	err = json.Unmarshal(resp.Body(), &o)
 	if err != nil {
 		r.log.Error(err.Error())
-		return order
+		return order, err
 	}
 
 	order.Number = o.Number
 	order.Status = o.Status
 	order.Accrual = o.Accrual
 
-	return order
+	return order, nil
+}
+
+func (r *RequestAccrual) tryToSendRequest(number string) orders.Order {
+	for {
+		ord, err := r.get(number)
+		if errors.Is(err, tooManyRequestsErr) {
+			time.Sleep(delay * time.Second)
+			continue
+		}
+		return ord
+	}
 }

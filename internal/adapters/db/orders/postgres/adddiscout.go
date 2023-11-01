@@ -43,13 +43,11 @@ func (os *OrderStorage) AddDiscount(ctx context.Context, order orders.Order) err
 	var orderID int
 	err = row.Scan(&orderID)
 	if err != nil {
-		tx.Rollback(ctx)
 		return err
 	}
 
 	_, err = tx.Exec(ctx, query2, order.Discount, orderID)
 	if err != nil {
-		tx.Rollback(ctx)
 		return err
 	}
 
@@ -57,16 +55,13 @@ func (os *OrderStorage) AddDiscount(ctx context.Context, order orders.Order) err
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgerrcode.IsIntegrityConstraintViolation(pgErr.Code) {
-			tx.Rollback(ctx)
 			return ErrNotEnoughMoney
 		}
-		tx.Rollback(ctx)
 		return err
 	}
 
 	_, err = tx.Exec(ctx, query4, orderID, order.Discount, order.UserID)
 	if err != nil {
-		tx.Rollback(ctx)
 		return err
 	}
 
