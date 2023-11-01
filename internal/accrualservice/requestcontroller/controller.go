@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var tooManyRequestsErr = errors.New("to many requests to server")
+var ErrTooManyRequests = errors.New("to many requests to server")
 
 const tooManyRequests = "429"
 const delay = 5
@@ -85,7 +85,7 @@ func (r *RequestAccrual) get(number string) (orders.Order, error) {
 	r.log.Warn(string(resp.Body()))
 
 	if resp.Status() == tooManyRequests {
-		return order, tooManyRequestsErr
+		return order, ErrTooManyRequests
 	}
 
 	err = json.Unmarshal(resp.Body(), &o)
@@ -104,7 +104,7 @@ func (r *RequestAccrual) get(number string) (orders.Order, error) {
 func (r *RequestAccrual) tryToSendRequest(number string) orders.Order {
 	for {
 		ord, err := r.get(number)
-		if errors.Is(err, tooManyRequestsErr) {
+		if errors.Is(err, ErrTooManyRequests) {
 			time.Sleep(delay * time.Second)
 			continue
 		}
