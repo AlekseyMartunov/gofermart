@@ -1,19 +1,18 @@
 package orderhandlers
 
 import (
+	"AlekseyMartunov/internal/orders"
 	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-
-	"AlekseyMartunov/internal/adapters/db/orders/postgres"
 )
 
 func (h *OrderHandler) GetOrders(c echo.Context) error {
 	userID := c.Get("userID").(int)
 	res, err := h.orderService.GetOrders(c.Request().Context(), userID)
 
-	if errors.Is(err, postgres.ErrEmptyResult) {
+	if errors.Is(err, orders.ErrEmptyResult) {
 		return c.JSON(http.StatusNoContent, noContent)
 	}
 

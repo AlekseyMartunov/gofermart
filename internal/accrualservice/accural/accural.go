@@ -17,21 +17,40 @@ type OrderService interface {
 }
 
 type Accrual struct {
-	orderService OrderService
-	log          logger
+	orderService   OrderService
+	log            logger
+	ordersToUpdate []orders.Order
 }
 
 func NewAccrual(l logger, os OrderService) *Accrual {
+	ordersArr := make([]orders.Order, 20)
+
 	return &Accrual{
-		log:          l,
-		orderService: os,
+		log:            l,
+		orderService:   os,
+		ordersToUpdate: ordersArr,
 	}
 }
 
 func (a *Accrual) Run(ctx context.Context, ch chan orders.Order, t time.Duration) {
 	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+
+			case ord, ok := <-ch:
+				if !ok {
+					return
+				}
+				a.ordersToUpdate = append(a.ordersToUpdate, ord)
+			}
+		}
+	}()
+
+	go func() {
 		ticker := time.NewTicker(t)
-		ordersArr := make([]orders.Order, 20)
+		defer ticker.Stop()
 
 		for {
 			select {
@@ -39,19 +58,8 @@ func (a *Accrual) Run(ctx context.Context, ch chan orders.Order, t time.Duration
 				return
 
 			case <-ticker.C:
-				if len(ordersArr) == 0 {
-					continue
-				}
-
-				a.orderService.Update(ctx, ordersArr...)
-				ordersArr = ordersArr[:0]
-
-			case ord, ok := <-ch:
-				if !ok {
-					ch = nil
-				}
-
-				ordersArr = append(ordersArr, ord)
+				a.orderService.Update(ctx, a.ordersToUpdate...)
+				a.ordersToUpdate = a.ordersToUpdate[:]
 			}
 		}
 	}()

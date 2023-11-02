@@ -14,7 +14,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 
-	"AlekseyMartunov/internal/adapters/db/orders/postgres"
 	"AlekseyMartunov/internal/adapters/http/orderhandlers"
 	mockorderhandlers "AlekseyMartunov/internal/adapters/http/orderhandlers/tests/mocks"
 	"AlekseyMartunov/internal/orders"
@@ -57,7 +56,7 @@ func TestGetOrdersHandler(t *testing.T) {
 	//-----------------------------------------------------------------
 
 	//test2
-	orderService.EXPECT().GetOrders(ctx, 100).Return(nil, postgres.ErrEmptyResult)
+	orderService.EXPECT().GetOrders(ctx, 100).Return(nil, orders.ErrEmptyResult)
 	//-----------------------------------------------------------------
 
 	//test3

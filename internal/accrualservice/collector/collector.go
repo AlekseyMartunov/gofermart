@@ -30,6 +30,8 @@ func (c *Collector) Run(ctx context.Context, t time.Duration) chan string {
 
 	go func() {
 		defer close(ch)
+		defer ticker.Stop()
+
 		for {
 			select {
 			case <-ctx.Done():

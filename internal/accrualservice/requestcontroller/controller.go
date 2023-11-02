@@ -55,7 +55,7 @@ func (r *RequestAccrual) Run(ctx context.Context, ch chan string) chan orders.Or
 
 			case number, ok := <-ch:
 				if !ok {
-					ch = nil
+					return
 				}
 
 				orderChan <- r.tryToSendRequest(number)

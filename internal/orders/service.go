@@ -10,6 +10,7 @@ import (
 )
 
 var ErrNotValidNumber = errors.New("not valid order number")
+var ErrEmptyResult = errors.New("empty result")
 
 type orderStorage interface {
 	Create(ctx context.Context, order Order) error
