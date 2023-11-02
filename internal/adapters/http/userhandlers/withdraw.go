@@ -13,20 +13,21 @@ import (
 
 func (h *UserHandlers) Withdraw(c echo.Context) error {
 	defer c.Request().Body.Close()
+
 	userID := c.Get("userID").(int)
 	ctx := c.Request().Context()
 
 	b, err := io.ReadAll(c.Request().Body)
 	if err != nil {
 		h.logger.Error("request body read error")
-		return c.String(http.StatusInternalServerError, internalErr)
+		return c.JSON(http.StatusInternalServerError, internalErr)
 	}
 
 	o := orderDTO{UserID: userID}
 	err = json.Unmarshal(b, &o)
 	if err != nil {
 		h.logger.Error("Unmarshal error")
-		return c.String(http.StatusBadRequest, incorrectReq)
+		return c.JSON(http.StatusBadRequest, incorrectReq)
 	}
 
 	err = h.orderService.AddDiscount(ctx, o.toEntity())
@@ -42,5 +43,5 @@ func (h *UserHandlers) Withdraw(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, internalErr)
 	}
 
-	return c.String(http.StatusOK, ok)
+	return c.JSON(http.StatusOK, ok)
 }

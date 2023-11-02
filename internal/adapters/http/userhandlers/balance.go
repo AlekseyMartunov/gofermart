@@ -12,7 +12,7 @@ func (h *UserHandlers) Balance(c echo.Context) error {
 	u, err := h.userService.Balance(ctx, userID)
 	if err != nil {
 		h.logger.Error(err.Error())
-		return c.JSON(http.StatusInternalServerError, "some erorororor")
+		return c.JSON(http.StatusInternalServerError, internalErr)
 	}
 
 	user := userDTO{}
