@@ -1,4 +1,4 @@
-package mock_orderhandlers
+package mockorderhandlers
 
 import (
 	"time"

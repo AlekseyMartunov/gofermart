@@ -25,12 +25,12 @@ func TestRegisterHandler(t *testing.T) {
 
 	ctx := context.Background()
 
-	userService := mock_loginhandlers.NewMockUserService(ctrl)
-	token := mock_loginhandlers.NewMocktokenManager(ctrl)
-	logger := mock_loginhandlers.NewMocklogger(ctrl)
+	userService := mockloginhandlers.NewMockUserService(ctrl)
+	token := mockloginhandlers.NewMocktokenManager(ctrl)
+	logger := mockloginhandlers.NewMocklogger(ctrl)
 
 	// test 1
-	u1 := mock_loginhandlers.UserDTO{
+	u1 := mockloginhandlers.UserDTO{
 		Login:    "123",
 		Password: "pass",
 	}
@@ -43,7 +43,7 @@ func TestRegisterHandler(t *testing.T) {
 	//-----------------------------------------------------------------
 
 	//test3
-	u3 := mock_loginhandlers.UserDTO{
+	u3 := mockloginhandlers.UserDTO{
 		Login:    "123",
 		Password: "pass",
 	}
@@ -51,7 +51,7 @@ func TestRegisterHandler(t *testing.T) {
 	//-----------------------------------------------------------------
 
 	//test4
-	u4 := mock_loginhandlers.UserDTO{
+	u4 := mockloginhandlers.UserDTO{
 		Login:    "123",
 		Password: "pass",
 	}

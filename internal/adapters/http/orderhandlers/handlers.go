@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-//go:generate mockgen -source handlers.go  -destination tests/mocks/mock_orderhandlers.go
+//go:generate mockgen -source handlers.go  -destination tests/mocks/mockorderhandlers.go
 
 type logger interface {
 	Info(msg string)

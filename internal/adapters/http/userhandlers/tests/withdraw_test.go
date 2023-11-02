@@ -14,7 +14,7 @@ import (
 
 	"AlekseyMartunov/internal/adapters/db/orders/postgres"
 	"AlekseyMartunov/internal/adapters/http/userhandlers"
-	mock_userhandlers "AlekseyMartunov/internal/adapters/http/userhandlers/tests/mocks"
+	mockuserhandlers "AlekseyMartunov/internal/adapters/http/userhandlers/tests/mocks"
 	"AlekseyMartunov/internal/orders"
 )
 
@@ -26,12 +26,12 @@ func TestWithdrawHandler(t *testing.T) {
 
 	ctx := context.Background()
 
-	logger := mock_userhandlers.NewMocklogger(ctrl)
-	userService := mock_userhandlers.NewMockUserService(ctrl)
-	orderService := mock_userhandlers.NewMockOrderService(ctrl)
+	logger := mockuserhandlers.NewMocklogger(ctrl)
+	userService := mockuserhandlers.NewMockUserService(ctrl)
+	orderService := mockuserhandlers.NewMockOrderService(ctrl)
 
 	//test1
-	o1 := mock_userhandlers.OrderDTO{
+	o1 := mockuserhandlers.OrderDTO{
 		Number:   "2377225624",
 		Discount: 751.0,
 		UserID:   100,
@@ -44,7 +44,7 @@ func TestWithdrawHandler(t *testing.T) {
 	//-----------------------------------------------------------------
 
 	//test3
-	o3 := mock_userhandlers.OrderDTO{
+	o3 := mockuserhandlers.OrderDTO{
 		Number:   "2377225624",
 		Discount: 751.0,
 		UserID:   100,
@@ -53,7 +53,7 @@ func TestWithdrawHandler(t *testing.T) {
 	//-----------------------------------------------------------------
 
 	//test4
-	o4 := mock_userhandlers.OrderDTO{
+	o4 := mockuserhandlers.OrderDTO{
 		Number:   "2377225624",
 		Discount: 751.0,
 		UserID:   100,
@@ -62,7 +62,7 @@ func TestWithdrawHandler(t *testing.T) {
 	//-----------------------------------------------------------------
 
 	//test5
-	o5 := mock_userhandlers.OrderDTO{
+	o5 := mockuserhandlers.OrderDTO{
 		Number:   "2377225624",
 		Discount: 751.0,
 		UserID:   100,

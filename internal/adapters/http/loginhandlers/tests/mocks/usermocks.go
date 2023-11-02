@@ -1,4 +1,4 @@
-package mock_loginhandlers
+package mockloginhandlers
 
 import "AlekseyMartunov/internal/users"
 

@@ -6,7 +6,7 @@ import (
 	"AlekseyMartunov/internal/users"
 )
 
-//go:generate mockgen -source loginhandlers.go  -destination tests/mocks/mock_loginhandlers.go
+//go:generate mockgen -source loginhandlers.go  -destination tests/mocks/mockloginhandlers.go
 
 type logger interface {
 	Info(msg string)

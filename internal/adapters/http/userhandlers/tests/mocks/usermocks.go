@@ -1,4 +1,4 @@
-package mock_userhandlers
+package mockuserhandlers
 
 import (
 	"AlekseyMartunov/internal/orders"

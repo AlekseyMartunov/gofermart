@@ -14,7 +14,7 @@ import (
 
 	"AlekseyMartunov/internal/adapters/db/orders/postgres"
 	"AlekseyMartunov/internal/adapters/http/orderhandlers"
-	mock_orderhandlers "AlekseyMartunov/internal/adapters/http/orderhandlers/tests/mocks"
+	mockorderhandlers "AlekseyMartunov/internal/adapters/http/orderhandlers/tests/mocks"
 	"AlekseyMartunov/internal/orders"
 )
 
@@ -26,14 +26,14 @@ func TestCreateOrdersHandler(t *testing.T) {
 
 	ctx := context.Background()
 
-	logger := mock_orderhandlers.NewMocklogger(ctrl)
-	userService := mock_orderhandlers.NewMockUserService(ctrl)
-	orderService := mock_orderhandlers.NewMockOrderService(ctrl)
+	logger := mockorderhandlers.NewMocklogger(ctrl)
+	userService := mockorderhandlers.NewMockUserService(ctrl)
+	orderService := mockorderhandlers.NewMockOrderService(ctrl)
 
 	orderHandler := orderhandlers.New(logger, userService, orderService)
 
 	//test1
-	o1 := mock_orderhandlers.OrderDTO{
+	o1 := mockorderhandlers.OrderDTO{
 		Number: "1234567890",
 		UserID: 100,
 	}
@@ -41,7 +41,7 @@ func TestCreateOrdersHandler(t *testing.T) {
 	//-----------------------------------------------------------------
 
 	//test2
-	o2 := mock_orderhandlers.OrderDTO{
+	o2 := mockorderhandlers.OrderDTO{
 		Number: "1234567890",
 		UserID: 100,
 	}
@@ -49,7 +49,7 @@ func TestCreateOrdersHandler(t *testing.T) {
 	//-----------------------------------------------------------------
 
 	//test3
-	o3 := mock_orderhandlers.OrderDTO{
+	o3 := mockorderhandlers.OrderDTO{
 		Number: "1234567890",
 		UserID: 100,
 	}
@@ -58,7 +58,7 @@ func TestCreateOrdersHandler(t *testing.T) {
 	//-----------------------------------------------------------------
 
 	//test4
-	o4 := mock_orderhandlers.OrderDTO{
+	o4 := mockorderhandlers.OrderDTO{
 		Number: "1234567890",
 		UserID: 100,
 	}
@@ -68,7 +68,7 @@ func TestCreateOrdersHandler(t *testing.T) {
 	//-----------------------------------------------------------------
 
 	//test5
-	o5 := mock_orderhandlers.OrderDTO{
+	o5 := mockorderhandlers.OrderDTO{
 		Number: "1234567890",
 		UserID: 100,
 	}
@@ -77,7 +77,7 @@ func TestCreateOrdersHandler(t *testing.T) {
 	//-----------------------------------------------------------------
 
 	//test6
-	o6 := mock_orderhandlers.OrderDTO{
+	o6 := mockorderhandlers.OrderDTO{
 		Number: "1234567890",
 		UserID: 100,
 	}

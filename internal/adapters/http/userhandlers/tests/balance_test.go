@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"AlekseyMartunov/internal/adapters/http/userhandlers"
-	mock_userhandlers "AlekseyMartunov/internal/adapters/http/userhandlers/tests/mocks"
+	mockuserhandlers "AlekseyMartunov/internal/adapters/http/userhandlers/tests/mocks"
 	"AlekseyMartunov/internal/users"
 )
 
@@ -26,9 +26,9 @@ func TestBalanceHandler(t *testing.T) {
 
 	ctx := context.Background()
 
-	logger := mock_userhandlers.NewMocklogger(ctrl)
-	userService := mock_userhandlers.NewMockUserService(ctrl)
-	orderService := mock_userhandlers.NewMockOrderService(ctrl)
+	logger := mockuserhandlers.NewMocklogger(ctrl)
+	userService := mockuserhandlers.NewMockUserService(ctrl)
+	orderService := mockuserhandlers.NewMockOrderService(ctrl)
 
 	//test1
 	u1 := users.User{

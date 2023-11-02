@@ -16,7 +16,7 @@ import (
 
 	"AlekseyMartunov/internal/adapters/db/users/postgres"
 	"AlekseyMartunov/internal/adapters/http/userhandlers"
-	mock_userhandlers "AlekseyMartunov/internal/adapters/http/userhandlers/tests/mocks"
+	mockuserhandlers "AlekseyMartunov/internal/adapters/http/userhandlers/tests/mocks"
 	"AlekseyMartunov/internal/users"
 )
 
@@ -26,9 +26,9 @@ func TestWithdrawalsHandler(t *testing.T) {
 
 	ctx := context.Background()
 
-	logger := mock_userhandlers.NewMocklogger(ctrl)
-	userService := mock_userhandlers.NewMockUserService(ctrl)
-	orderService := mock_userhandlers.NewMockOrderService(ctrl)
+	logger := mockuserhandlers.NewMocklogger(ctrl)
+	userService := mockuserhandlers.NewMockUserService(ctrl)
+	orderService := mockuserhandlers.NewMockOrderService(ctrl)
 
 	//test1
 	t1, _ := time.Parse(time.RFC3339, "2020-12-09T16:09:57+03:00")

@@ -16,7 +16,7 @@ import (
 
 	"AlekseyMartunov/internal/adapters/db/orders/postgres"
 	"AlekseyMartunov/internal/adapters/http/orderhandlers"
-	mock_orderhandlers "AlekseyMartunov/internal/adapters/http/orderhandlers/tests/mocks"
+	mockorderhandlers "AlekseyMartunov/internal/adapters/http/orderhandlers/tests/mocks"
 	"AlekseyMartunov/internal/orders"
 )
 
@@ -28,9 +28,9 @@ func TestGetOrdersHandler(t *testing.T) {
 
 	ctx := context.Background()
 
-	logger := mock_orderhandlers.NewMocklogger(ctrl)
-	userService := mock_orderhandlers.NewMockUserService(ctrl)
-	orderService := mock_orderhandlers.NewMockOrderService(ctrl)
+	logger := mockorderhandlers.NewMocklogger(ctrl)
+	userService := mockorderhandlers.NewMockUserService(ctrl)
+	orderService := mockorderhandlers.NewMockOrderService(ctrl)
 
 	orderHandler := orderhandlers.New(logger, userService, orderService)
 

@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-//go:generate mockgen -source handlers.go  -destination tests/mocks/mock_handlers.go
+//go:generate mockgen -source handlers.go  -destination tests/mocks/mockhandlers.go
 
 type logger interface {
 	Info(msg string)
